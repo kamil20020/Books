@@ -146,7 +146,7 @@ class RoleServiceTest {
     void shouldCreateRole() {
 
         //given
-        String roleName = "admin";
+        String roleName = "ADMIN";
 
         //when
         Mockito.when(roleRepository.existsByNameIgnoreCase(anyString())).thenReturn(false);
