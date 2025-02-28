@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/kamil20020/Books
+    repoURL: https://github.com/kamil20020/Books.git
     targetRevision: argocd-apps
     path: .
 
