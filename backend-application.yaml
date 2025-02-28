@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/kamil20020/Books.git
     targetRevision: argocd-apps
-    path: .
+    path: ./dev
 
   destination:
     server: https://kubernetes.default.svc

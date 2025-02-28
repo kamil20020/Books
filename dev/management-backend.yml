@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: management-backend
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: management-backend
+  template:
+    metadata:
+      labels:
+        app: management-backend
+    spec:
+      containers:
+        - name: management-backend
+          image: kamil20/management-backend:latest
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: management-db-configmap
+                  key: DATABASE_SERVICE_NAME
+
+            - name: DATABASE_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: management-db-configmap
+                  key: DATABASE_TYPE
+
+            - name: DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: management-db-configmap
+                  key: DATABASE_NAME
+
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:$(DATABASE_TYPE)://$(DATABASE_SERVICE)/$(DATABASE_NAME)"
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: management-db-secret
+                  key: DATABASE_USERNAME
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: management-db-secret
+                  key: DATABASE_PASSWORD
+
+            - name: SERVER_PORT
+              value: "9000"
+
+          ports:
+            - containerPort: 9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: management-backend-service
+spec:
+  selector:
+    app: management-backend
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: 9000
+  
