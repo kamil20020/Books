@@ -1,3 +1,6 @@
+ENV DOCKER_HOST=tcp://host.docker.internal:9000
+ENV TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
+
 FROM maven:3.8.5-openjdk-17 AS builder
 WORKDIR /home/app
 COPY pom.xml pom.xml
