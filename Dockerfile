@@ -1,7 +1,5 @@
 FROM maven:3.8.5-openjdk-17 AS builder
 
-ENV DOCKER_HOST=tcp://localhost:2375
-
 WORKDIR /home/app
 COPY pom.xml pom.xml
 COPY ./src ./src
