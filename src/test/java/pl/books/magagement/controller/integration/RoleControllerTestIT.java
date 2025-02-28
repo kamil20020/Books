@@ -33,7 +33,7 @@ class RoleControllerTestIT {
 
     @Container
     @ServiceConnection
-    private static final PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>();
+    private static final PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:13");
 
     @LocalServerPort
     public Integer port;

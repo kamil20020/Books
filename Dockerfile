@@ -1,9 +1,8 @@
 FROM maven:3.8.5-openjdk-17 AS builder
-
 WORKDIR /home/app
 COPY pom.xml pom.xml
 COPY ./src ./src
-RUN mvn package
+RUN mvn package -Dmaven.test.skip=true
 
 FROM openjdk:18-alpine
 WORKDIR /home/app
