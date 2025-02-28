@@ -232,19 +232,16 @@ class UserControllerTestIT {
     public void shouldRevokeRole(){
 
         //given
-        RoleEntity role = new RoleEntity("WRITER");
-        role = roleRepository.save(role);
-
         UserEntity user = createAdmin("adam_nowak", "nowak");
-        user.getRoles().add(role);
+        userRepository.flush();
 
-//        roleService.grantRole(user.getId(), role.getId());
+        RoleEntity adminRole = roleRepository.findAll().get(0);
 
         //when
         RestAssured
         .given()
             .pathParam("userId", user.getId())
-            .pathParam("roleId", role.getId())
+            .pathParam("roleId", adminRole.getId())
             .auth()
                 .preemptive()
                 .basic(
@@ -259,7 +256,7 @@ class UserControllerTestIT {
         user = userRepository.save(user);
 
         //then
-        assertEquals(1, user.getRoles().size());
+        assertEquals(0, user.getRoles().size());
     }
 
     @Test
