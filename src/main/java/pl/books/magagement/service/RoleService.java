@@ -71,7 +71,6 @@ public class RoleService {
 
         foundUser.getRoles().add(foundRole);
 
-
         return foundRole;
     }
 

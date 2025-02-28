@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,10 @@ import pl.books.magagement.service.UserService;
 
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,6 +62,9 @@ class UserControllerTestIT {
     private RoleService roleService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
@@ -69,6 +75,27 @@ class UserControllerTestIT {
 
         userRepository.deleteAll();
         roleRepository.deleteAll();
+    }
+
+    public UserEntity createAdmin(String username, String password){
+
+        String encodedPassword = passwordEncoder.encode(password);
+
+        UserEntity newUser = UserEntity.builder()
+            .username(username)
+            .password(encodedPassword)
+            .roles(new HashSet<>())
+            .build();
+
+        UserEntity user = userRepository.save(newUser);
+
+        RoleEntity adminRole = new RoleEntity("ADMIN");
+
+        adminRole = roleRepository.save(adminRole);
+
+        roleService.grantRole(user.getId(), adminRole.getId());
+
+        return user;
     }
 
     @Test
@@ -134,30 +161,25 @@ class UserControllerTestIT {
     public void shouldGetRoles(){
 
         //given
-        UserEntity user = UserEntity.builder()
-            .username("kamil")
-            .password("nowak")
-            .roles(new HashSet<>())
-            .build();
+        UserEntity admin = createAdmin("kamil", "nowak");
 
-        user = userRepository.save(user);
+        RoleEntity writerRole = new RoleEntity("WRITER");
 
-        RoleEntity adminRole = new RoleEntity("admin");
-        RoleEntity writerRole = new RoleEntity("writer");
-
-        adminRole = roleRepository.save(adminRole);
         writerRole = roleRepository.save(writerRole);
 
-        Set<RoleEntity> expectedRoles = Set.of(adminRole, writerRole);
-
-        roleService.grantRole(user.getId(), adminRole.getId());
-        roleService.grantRole(user.getId(), writerRole.getId());
+        roleService.grantRole(admin.getId(), writerRole.getId());
 
         //when
         Set<RoleEntity> gotRoles = RestAssured
         .given()
+            .auth()
+                .preemptive()
+                .basic(
+                    "kamil",
+                    "nowak"
+                )
         .when()
-            .get("/{userId}/roles", user.getId())
+            .get("/{userId}/roles", admin.getId())
         .then()
             .statusCode(200)
             .extract()
@@ -165,30 +187,35 @@ class UserControllerTestIT {
 
         //then
         assertEquals(2, gotRoles.size());
-        assertEquals(expectedRoles, gotRoles);
+
+        boolean grantedRolesExist = gotRoles.stream()
+            .map(role -> role.getName())
+            .collect(Collectors.toList())
+            .containsAll(List.of("ADMIN", "WRITER"));
+
+        assertTrue(grantedRolesExist);
     }
 
     @Test
     public void shouldGrantRole(){
 
         //given
-        RoleEntity role = new RoleEntity("admin");
-
+        RoleEntity role = new RoleEntity("WRITER");
         role = roleRepository.save(role);
 
-        UserEntity user = UserEntity.builder()
-            .username("adam")
-            .password("nowak")
-            .roles(new HashSet<>())
-            .build();
-
-        user = userRepository.save(user);
+        UserEntity user = createAdmin("adam_nowak", "nowak");
 
         //when
         RestAssured
         .given()
             .pathParam("userId", user.getId())
             .pathParam("roleId", role.getId())
+            .auth()
+                .preemptive()
+                .basic(
+                        "adam_nowak",
+                        "nowak"
+                )
         .when()
             .post("/{userId}/roles/{roleId}")
         .then()
@@ -197,33 +224,33 @@ class UserControllerTestIT {
         user = userRepository.findById(user.getId()).get();
 
         //then
-        assertEquals(1, user.getRoles().size());
-        assertEquals(role, user.getRoles().iterator().next());
+        assertEquals(2, user.getRoles().size());
+        assertTrue(user.getRoles().contains(role));
     }
 
     @Test
     public void shouldRevokeRole(){
 
         //given
-        RoleEntity role = new RoleEntity("admin");
-
+        RoleEntity role = new RoleEntity("WRITER");
         role = roleRepository.save(role);
 
-        UserEntity user = UserEntity.builder()
-            .username("kamil")
-            .password("nowak")
-            .roles(new HashSet<>())
-            .build();
+        UserEntity user = createAdmin("adam_nowak", "nowak");
+        user.getRoles().add(role);
 
-        user = userRepository.save(user);
-
-        roleService.grantRole(user.getId(), role.getId());
+//        roleService.grantRole(user.getId(), role.getId());
 
         //when
         RestAssured
         .given()
             .pathParam("userId", user.getId())
             .pathParam("roleId", role.getId())
+            .auth()
+                .preemptive()
+                .basic(
+                        "adam_nowak",
+                        "nowak"
+                )
         .when()
             .delete("/{userId}/roles/{roleId}")
         .then()
@@ -232,24 +259,14 @@ class UserControllerTestIT {
         user = userRepository.save(user);
 
         //then
-        assertTrue(user.getRoles().isEmpty());
+        assertEquals(1, user.getRoles().size());
     }
 
     @Test
     public void shouldPatchUserById(){
 
         //given
-        RoleEntity adminRole = new RoleEntity("ADMIN");
-
-        adminRole = roleRepository.save(adminRole);
-
-        UserEntity user = UserEntity.builder()
-            .username("adam_nowak")
-            .password("$2a$10$y/VWKoTjVR9jTiCtjQB8XuWpj2TAdH3.IXXxaE0LZKF9cC1WY8erO")
-            .roles(Set.of(adminRole))
-            .build();
-
-        user = userRepository.save(user);
+        UserEntity user = createAdmin("adam_nowak", "nowak"); //$2a$10$y/VWKoTjVR9jTiCtjQB8XuWpj2TAdH3.IXXxaE0LZKF9cC1WY8erO"
 
         PatchUserRequest request = new PatchUserRequest("adam.nowak");
 
@@ -282,17 +299,7 @@ class UserControllerTestIT {
     public void shouldDeleteUserById(){
 
         //given
-        RoleEntity adminRole = new RoleEntity("ADMIN");
-
-        adminRole = roleRepository.save(adminRole);
-
-        UserEntity user = UserEntity.builder()
-            .username("kamil_nowak")
-            .password("$2a$10$y/VWKoTjVR9jTiCtjQB8XuWpj2TAdH3.IXXxaE0LZKF9cC1WY8erO")
-            .roles(Set.of(adminRole))
-            .build();
-
-        user = userRepository.save(user);
+        UserEntity user = createAdmin("adam_nowak", "nowak"); //$2a$10$y/VWKoTjVR9jTiCtjQB8XuWpj2TAdH3.IXXxaE0LZKF9cC1WY8erO
 
         //when
         RestAssured
@@ -301,7 +308,7 @@ class UserControllerTestIT {
             .auth()
                 .preemptive()
                 .basic(
-                    "kamil_nowak",
+                    "adam_nowak",
                     "nowak"
                 )
         .when()

@@ -54,7 +54,7 @@ class RoleControllerTest {
     void shouldCreateRole() throws Exception {
 
         //given
-        CreateRoleRequest createRoleRequest = new CreateRoleRequest("admin");
+        CreateRoleRequest createRoleRequest = new CreateRoleRequest("ADMIN");
 
         String createRoleRequestJson = objectMapper.writeValueAsString(createRoleRequest);
 
@@ -69,14 +69,14 @@ class RoleControllerTest {
         .andReturn();
 
         //then
-        Mockito.verify(roleService).createRole("admin");
+        Mockito.verify(roleService).createRole("ADMIN");
     }
 
     @Test
     void shouldNotCreateDuplicateRole() throws Exception {
 
         //given
-        CreateRoleRequest createRoleRequest = new CreateRoleRequest("admin");
+        CreateRoleRequest createRoleRequest = new CreateRoleRequest("ADMIN");
 
         String createRoleRequestJson = objectMapper.writeValueAsString(createRoleRequest);
 
@@ -93,6 +93,6 @@ class RoleControllerTest {
         .andReturn();
 
         //then
-        Mockito.verify(roleService).createRole("admin");
+        Mockito.verify(roleService).createRole("ADMIN");
     }
 }

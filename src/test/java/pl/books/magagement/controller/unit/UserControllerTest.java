@@ -21,6 +21,8 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import pl.books.magagement.config.SecurityConfig;
 import pl.books.magagement.model.api.request.RegisterRequest;
 import pl.books.magagement.model.entity.RoleEntity;
+import pl.books.magagement.model.mappers.UserMapper;
+import pl.books.magagement.service.AuthorService;
 import pl.books.magagement.service.RoleService;
 import pl.books.magagement.service.UserService;
 

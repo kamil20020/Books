@@ -17,6 +17,7 @@ import pl.books.magagement.model.api.request.CreateRoleRequest;
 import pl.books.magagement.model.entity.RoleEntity;
 import pl.books.magagement.repository.RoleRepository;
 import pl.books.magagement.repository.UserRepository;
+import pl.books.magagement.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,6 +37,9 @@ class RoleControllerTestIT {
     public RoleRepository roleRepository;
 
     @Autowired
+    public UserService userService;
+
+    @Autowired
     public UserRepository userRepository;
 
     @BeforeEach
@@ -52,13 +56,19 @@ class RoleControllerTestIT {
     void shouldCreateRole() {
 
         //given
-        CreateRoleRequest createRoleRequest = new CreateRoleRequest("admin");
+        CreateRoleRequest createRoleRequest = new CreateRoleRequest("ADMIN");
 
         //when
         RestAssured
         .given()
             .contentType(ContentType.JSON)
             .body(createRoleRequest)
+            .auth()
+                .preemptive()
+                .basic(
+                    "adam_nowak",
+                    "nowak"
+                )
         .when()
             .post()
         .then()
@@ -66,18 +76,18 @@ class RoleControllerTestIT {
 
         //then
         assertEquals(1, roleRepository.count());
-        assertEquals("admin", roleRepository.findAll().iterator().next().getName());
+        assertEquals("ADMIN", roleRepository.findAll().iterator().next().getName());
     }
 
     @Test
     void shouldNotCreateDuplicateRole() {
 
         //given
-        RoleEntity role = new RoleEntity("admin");
+        RoleEntity role = new RoleEntity("ADMIN");
 
         role = roleRepository.save(role);
 
-        CreateRoleRequest createRoleRequest = new CreateRoleRequest("admin");
+        CreateRoleRequest createRoleRequest = new CreateRoleRequest("ADMIN");
 
         //when
         RestAssured
