@@ -9,10 +9,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import pl.books.magagement.repository.UserRepository;
 import pl.books.magagement.service.UserService;
@@ -24,16 +26,20 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserService userService;
+    private final JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
             .csrf(csrf -> csrf.disable())
-            .httpBasic(Customizer.withDefaults())
+//            .httpBasic(Customizer.withDefaults())
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .authorizeHttpRequests(request -> request
-                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users", "/users/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/publishers/**", "/books/**", "/authors/**").permitAll()
                 .requestMatchers("/users/**", "/roles/**").hasRole("ADMIN")
                 .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
@@ -55,22 +61,5 @@ public class SecurityConfig {
             }));
 
         return http.build();
-    }
-
-    @Bean
-    public AuthenticationProvider daoAuthenticationProvider(){
-
-        DaoAuthenticationProvider daoAuthProvider = new DaoAuthenticationProvider();
-
-        daoAuthProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthProvider.setUserDetailsService(userService);
-
-        return daoAuthProvider;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-
-        return new BCryptPasswordEncoder();
     }
 }

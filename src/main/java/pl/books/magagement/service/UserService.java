@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import pl.books.magagement.config.JwtService;
+import pl.books.magagement.model.api.response.LoginResponse;
 import pl.books.magagement.model.entity.UserEntity;
 import pl.books.magagement.model.internal.PatchUser;
 import pl.books.magagement.model.internal.UserSearchCriteria;
@@ -29,6 +31,9 @@ import java.util.*;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
     
     public Page<UserEntity> searchUsers(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
@@ -68,6 +73,18 @@ public class UserService implements UserDetailsService {
             .orElseThrow(() -> new EntityNotFoundException("User not found by given id"));
     }
 
+    public String login(String username, String password) throws IllegalArgumentException{
+
+        Optional<UserEntity> foundUserOpt = userRepository.findByUsernameIgnoreCase(username);
+
+        if(foundUserOpt.isEmpty() || !passwordEncoder.matches(password, foundUserOpt.get().getPassword())){
+
+            throw new IllegalArgumentException("Invalid username or password");
+        }
+
+        return jwtService.generateAccessToken(foundUserOpt.get());
+    }
+
     @Transactional
     public UserEntity register(String username, String password) throws EntityExistsException{
 
@@ -75,9 +92,11 @@ public class UserService implements UserDetailsService {
             throw new EntityExistsException("Duplicate username");
         }
 
+        String encryptedPassword = passwordEncoder.encode(password);
+
         UserEntity newUser = UserEntity.builder()
             .username(username)
-            .password(password)
+            .password(encryptedPassword)
             .roles(new HashSet<>())
             .build();
 

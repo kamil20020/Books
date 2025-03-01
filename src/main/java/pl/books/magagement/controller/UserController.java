@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import pl.books.magagement.model.api.request.LoginRequest;
 import pl.books.magagement.model.api.request.PatchUserRequest;
 import pl.books.magagement.model.api.request.RegisterRequest;
 import pl.books.magagement.model.api.request.UserSearchCriteriaRequest;
+import pl.books.magagement.model.api.response.LoginResponse;
 import pl.books.magagement.model.api.response.UserResponse;
 import pl.books.magagement.model.entity.RoleEntity;
 import pl.books.magagement.model.entity.UserEntity;
@@ -36,8 +38,6 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
 
-    private final PasswordEncoder passwordEncoder;
-
     private final UserMapper userMapper;
 
     @GetMapping
@@ -52,15 +52,23 @@ public class UserController {
         return ResponseEntity.ok(foundUsersPage);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+
+        String accessToken = userService.login(loginRequest.username(), loginRequest.password());
+
+        LoginResponse response = new LoginResponse(accessToken);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest registerRequest){
-
-        String encodedPassword = passwordEncoder.encode(registerRequest.password());
 
         UserEntity newUser;
 
         try{
-            newUser = userService.register(registerRequest.username(), encodedPassword);
+            newUser = userService.register(registerRequest.username(), registerRequest.password());
         }
         catch(EntityExistsException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
