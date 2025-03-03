@@ -14,55 +14,32 @@ class UserService{
                 ...pageable,
                 username: usernamePhrase
             },
-            headers: {
-                Authorization: "Basic YWRtaW46YWRtaW4xMjM="
-            }
         })
     }
 
     createUser(request: CreateUser){
 
-        return axios.post(`${this.api}`, request, {
-            headers: {
-                Authorization: "Basic YWRtaW46YWRtaW4xMjM="
-            }
-        })
+        return axios.post(`${this.api}`, request)
     }
 
     createUserRole(userId: string, roleId: string){
 
-        return axios.post(`${this.api}/${userId}/roles/${roleId}`, {}, {
-            headers: {
-                Authorization: "Basic YWRtaW46YWRtaW4xMjM="
-            }
-        })
+        return axios.post(`${this.api}/${userId}/roles/${roleId}`)
     }
 
     patchById(userId: string, newData: PatchUser){
 
-        return axios.patch(`${this.api}/${userId}`, newData, {
-            headers: {
-                Authorization: "Basic YWRtaW46YWRtaW4xMjM="
-            }
-        })
+        return axios.patch(`${this.api}/${userId}`, newData)
     }
 
     deleteByid(userId: string){
 
-        return axios.delete(`${this.api}/${userId}`, {
-            headers: {
-                Authorization: "Basic YWRtaW46YWRtaW4xMjM="
-            }
-        })
+        return axios.delete(`${this.api}/${userId}`)
     }
 
     deleteUserRole(userId: string, roleId: string){
 
-        return axios.delete(`${this.api}/${userId}/roles/${roleId}`, {
-            headers: {
-                Authorization: "Basic YWRtaW46YWRtaW4xMjM="
-            }
-        })
+        return axios.delete(`${this.api}/${userId}/roles/${roleId}`)
     }
 }
 

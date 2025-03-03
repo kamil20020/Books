@@ -10,9 +10,6 @@ class RoleService{
         return axios.get(`${this.api}`, {
             params: {
                 ...pageable
-            },
-            headers: {
-                Authorization: "Basic YWRtaW46YWRtaW4xMjM="
             }
         })
     }
