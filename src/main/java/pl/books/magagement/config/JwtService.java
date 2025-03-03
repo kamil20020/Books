@@ -1,11 +1,8 @@
 package pl.books.magagement.config;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import pl.books.magagement.model.entity.UserEntity;
@@ -13,12 +10,13 @@ import pl.books.magagement.model.entity.UserEntity;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -27,6 +25,9 @@ public class JwtService {
 
     @Value("${jwt.access-token.expiration}")
     private long accessTokenExpiration;
+
+    @Value("${jwt.refresh-token.expiration}")
+    private long refreshTokenExpiration;
 
     private final PrivateKey privateKey;
     private final PublicKey publicKey;
@@ -102,6 +103,13 @@ public class JwtService {
             .build();
     }
 
+    private Claims getTokenClaims(String token){
+
+        return getParser()
+            .parseClaimsJws(token)
+            .getBody();
+    }
+
     public void verifyToken(String token) throws IllegalArgumentException{
 
         try {
@@ -114,24 +122,54 @@ public class JwtService {
 
     public String getUsername(String token){
 
-        return (String) getParser()
-            .parseClaimsJws(token)
-            .getBody()
+        return (String) getTokenClaims(token)
             .get("username");
     }
 
-    public String generateAccessToken(UserEntity user){
+    public UUID getTokenId(String token){
 
-        Date actualDate = new Date();
-        Date expirationDate = new Date(actualDate.getTime() + accessTokenExpiration);
+        String rawId = getTokenClaims(token).getId();
+
+        return UUID.fromString(rawId);
+    }
+
+    public UUID getUserId(String token){
+
+        String rawId = getTokenClaims(token).getSubject();
+
+        return UUID.fromString(rawId);
+    }
+
+    public LocalDateTime getExpirationTime(String token){
+
+        Date rawExpirationTime = getTokenClaims(token).getExpiration();
+
+        return LocalDateTime.ofInstant(rawExpirationTime.toInstant(), ZoneId.systemDefault());
+    }
+
+    public String generateAccessToken(UserEntity user){
 
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("username", user.getUsername());
         claims.put("roles", user.getRoles());
 
+        return generateToken(user, accessTokenExpiration, claims);
+    }
+
+    public String generateRefreshToken(UserEntity user){
+
+        return generateToken(user, refreshTokenExpiration, new HashMap<>());
+    }
+
+    private String generateToken(UserEntity user, long tokenExpiration, Map<String, Object> claims){
+
+        Date actualDate = new Date();
+        Date expirationDate = new Date(actualDate.getTime() + tokenExpiration);
+
         return Jwts.builder()
             .setClaims(claims)
+            .setId(UUID.randomUUID().toString())
             .setSubject(user.getId().toString())
             .setAudience(audience)
             .setIssuer(issuer)

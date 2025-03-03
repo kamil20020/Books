@@ -39,10 +39,11 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(request -> request
-                .requestMatchers(HttpMethod.POST, "/users", "/users/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users", "/users/login", "/users/refresh-access-token").permitAll()
+                .requestMatchers(HttpMethod.GET, "/users/logout").authenticated()
                 .requestMatchers(HttpMethod.GET, "/publishers/**", "/books/**", "/authors/**").permitAll()
                 .requestMatchers("/users/**", "/roles/**").hasRole("ADMIN")
-                .requestMatchers("/swagger-ui/**").hasRole("ADMIN")
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() //.hasRole("ADMIN")
                 .requestMatchers("/security/public").permitAll()
                 .requestMatchers("/security/requires-admin").hasRole("ADMIN")
                 .anyRequest().authenticated()

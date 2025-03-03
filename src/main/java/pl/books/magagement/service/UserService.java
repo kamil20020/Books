@@ -2,17 +2,20 @@ package pl.books.magagement.service;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import pl.books.magagement.config.JwtService;
 import pl.books.magagement.model.api.response.LoginResponse;
@@ -24,6 +27,7 @@ import pl.books.magagement.specification.UserSpecification;
 
 import static org.springframework.data.jpa.domain.Specification.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -34,6 +38,7 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RevokedRefreshTokenService revokedRefreshTokenService;
     
     public Page<UserEntity> searchUsers(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
@@ -73,7 +78,8 @@ public class UserService implements UserDetailsService {
             .orElseThrow(() -> new EntityNotFoundException("User not found by given id"));
     }
 
-    public String login(String username, String password) throws IllegalArgumentException{
+    @Transactional
+    public LoginResponse login(String username, String password) throws IllegalArgumentException{
 
         Optional<UserEntity> foundUserOpt = userRepository.findByUsernameIgnoreCase(username);
 
@@ -82,7 +88,44 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Invalid username or password");
         }
 
-        return jwtService.generateAccessToken(foundUserOpt.get());
+        UserEntity foundUser = foundUserOpt.get();
+
+        String accessToken = jwtService.generateAccessToken(foundUser);
+        String refreshToken = jwtService.generateRefreshToken(foundUser);
+
+        LoginResponse response = new LoginResponse(accessToken, refreshToken);
+
+        revokedRefreshTokenService.removeTokensForUser(foundUser.getId());
+
+        return response;
+    }
+
+    public LoginResponse refreshAccessToken(String refreshToken) throws IllegalArgumentException,  EntityNotFoundException{
+
+        if(revokedRefreshTokenService.doesTokenExist(refreshToken)){
+            throw new IllegalArgumentException("Refresh token was revoked");
+        }
+
+        UUID userID = jwtService.getUserId(refreshToken);
+
+        UserEntity foundUser = getById(userID);
+
+        String newAccessToken = jwtService.generateAccessToken(foundUser);
+        String newRefreshToken = jwtService.generateRefreshToken(foundUser);
+
+        LoginResponse response = new LoginResponse(
+            newAccessToken,
+            newRefreshToken
+        );
+
+        revokedRefreshTokenService.addToken(refreshToken);
+
+        return response;
+    }
+
+    public void logout(String token){
+
+        revokedRefreshTokenService.addToken(token);
     }
 
     @Transactional

@@ -9,6 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.books.magagement.config.JwtService;
+import pl.books.magagement.model.api.response.LoginResponse;
 import pl.books.magagement.model.entity.RoleEntity;
 import pl.books.magagement.model.entity.UserEntity;
 import pl.books.magagement.repository.UserRepository;
@@ -25,6 +28,12 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private JwtService jwtService;
 
     @InjectMocks
     private UserService userService;
@@ -74,14 +83,95 @@ class UserServiceTest {
     }
 
     @Test
+    void shouldLogin(){
+
+        //given
+        UserEntity user = UserEntity.builder()
+            .username("kamil")
+            .password("encoded-nowak")
+            .roles(new HashSet<>())
+            .build();
+
+        Optional<UserEntity> userOpt = Optional.of(user);
+
+        String accessToken = "access-token";
+        String refreshToken = "refresh-token";
+
+        //when
+        Mockito.when(userRepository.findByUsernameIgnoreCase(anyString())).thenReturn(userOpt);
+        Mockito.when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        Mockito.when(jwtService.generateAccessToken(any())).thenReturn(accessToken);
+
+        LoginResponse gotResponse = userService.login("kamil", "nowak");
+
+        //then
+        assertEquals(accessToken, gotResponse.accessToken());
+        assertEquals(refreshToken, gotResponse.refreshToken());
+
+        Mockito.verify(userRepository).findByUsernameIgnoreCase(user.getUsername());
+        Mockito.verify(passwordEncoder).matches("nowak", "encoded-nowak");
+        Mockito.verify(jwtService).generateAccessToken(user);
+    }
+
+    @Test
+    void shouldNotLoginWhenUserWasNotFound(){
+
+        //given
+        String username = "kamil";
+        String password = "nowak";
+
+        //when
+        Mockito.when(userRepository.findByUsernameIgnoreCase(anyString())).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> userService.login(username, password)
+        );
+
+        Mockito.verify(userRepository).findByUsernameIgnoreCase(username);
+    }
+
+    @Test
+    void shouldNotLoginWhenPasswordWasInvalid(){
+
+        //given
+        String username = "kamil";
+        String password = "nowak";
+
+        UserEntity user = UserEntity.builder()
+            .username(username)
+            .password("encoded-password")
+            .roles(new HashSet<>())
+            .build();
+
+        Optional<UserEntity> userOpt = Optional.of(user);
+
+        //when
+        Mockito.when(userRepository.findByUsernameIgnoreCase(anyString())).thenReturn(userOpt);
+        Mockito.when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+
+        //then
+        assertThrows(
+             IllegalArgumentException.class,
+            () -> userService.login(username, password)
+        );
+
+        Mockito.verify(userRepository).findByUsernameIgnoreCase(username);
+        Mockito.verify(passwordEncoder).matches(password, "encoded-password");
+    }
+
+    @Test
     void shouldRegister(){
 
         //given
         String username = "kamil";
-        String password = "bm93YWs=";
+        String password = "nowak";
+        String encodedPassword = "encoded-password";
 
         //when
         Mockito.when(userRepository.existsByUsernameIgnoreCase(anyString())).thenReturn(false);
+        Mockito.when(passwordEncoder.encode(anyString())).thenReturn(encodedPassword);
         Mockito.when(userRepository.save(any())).thenReturn(new UserEntity());
 
         UserEntity createdUser = userService.register(username, password);
@@ -92,12 +182,13 @@ class UserServiceTest {
         assertNotNull(createdUser);
 
         Mockito.verify(userRepository).existsByUsernameIgnoreCase(username);
+        Mockito.verify(passwordEncoder).encode(password);
         Mockito.verify(userRepository).save(toCreateUserCaptor.capture());
 
         UserEntity toCreateUser = toCreateUserCaptor.getValue();
 
         assertEquals(username, toCreateUser.getUsername());
-        assertEquals(password, toCreateUser.getPassword());
+        assertEquals(encodedPassword, toCreateUser.getPassword());
     }
 
     @Test

@@ -15,6 +15,5 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<UserEntity, UUID>, JpaSpecificationExecutor<UserEntity> {
 
     boolean existsByUsernameIgnoreCase(String username);
-    Optional<UserEntity> findByUsernameAndPassword(String username, String password);
     Optional<UserEntity> findByUsernameIgnoreCase(String username);
 }

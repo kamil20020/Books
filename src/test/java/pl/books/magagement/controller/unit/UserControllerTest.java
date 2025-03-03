@@ -18,12 +18,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import pl.books.magagement.config.JwtFilter;
 import pl.books.magagement.config.SecurityConfig;
 import pl.books.magagement.controller.AuthorController;
 import pl.books.magagement.controller.UserController;
+import pl.books.magagement.model.api.request.LoginRequest;
 import pl.books.magagement.model.api.request.RegisterRequest;
+import pl.books.magagement.model.api.response.LoginResponse;
 import pl.books.magagement.model.entity.RoleEntity;
 import pl.books.magagement.model.mappers.UserMapper;
 import pl.books.magagement.service.AuthorService;
@@ -53,6 +57,9 @@ class UserControllerTest {
 
     @MockBean
     private RoleService roleService;
+
+    @MockBean
+    private JwtFilter jwtFilter;
 
     @MockBean
     private UserMapper userMapper;
@@ -86,13 +93,7 @@ class UserControllerTest {
         .andExpect(status().isCreated());
 
         //then
-        ArgumentCaptor<String> encodedPasswordCaptor = ArgumentCaptor.forClass(String.class);
-
-        Mockito.verify(userService).register(eq(username), encodedPasswordCaptor.capture()); //encodedPasswordCaptor.capture()
-
-//        String gotEncodedPassword = encodedPasswordCaptor.getValue();
-//
-//        assertEquals(password, gotEncodedPassword);
+        Mockito.verify(userService).register(username, password);
     }
 
     @Test
@@ -117,15 +118,70 @@ class UserControllerTest {
         .andDo(print())
         .andExpect(status().isConflict());
 
-
-        ArgumentCaptor<String> encodedPasswordCaptor = ArgumentCaptor.forClass(String.class);
-
         //then
         Mockito.verify(userService).register(eq(username), anyString());
+    }
 
-//        String gotEncodedPassword = encodedPasswordCaptor.getValue();
-//
-//        assertEquals("", gotEncodedPassword);
+    @Test
+    public void shouldLogin() throws Exception {
+
+        //given
+        LoginRequest request = new LoginRequest("kamil", "nowak");
+
+        String encodedRequest = objectMapper.writeValueAsString(request);
+
+        String expectedAccessToken = "access-token";
+        String expectedRefreshToken = "refresh-token";
+
+        LoginResponse expectedResponse = new LoginResponse(
+            expectedAccessToken,
+            expectedRefreshToken
+        );
+
+        //when
+        Mockito.when(userService.login(anyString(), anyString())).thenReturn(expectedResponse);
+
+        MvcResult response = mockMvc.perform(
+           post(API_URL_PREFIX + "/login")
+           .contentType(MediaType.APPLICATION_JSON_VALUE)
+           .content(encodedRequest)
+        )
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andReturn();
+
+        String responseStr = response.getResponse().getContentAsString();
+        LoginResponse loginResponse = objectMapper.readValue(responseStr, LoginResponse.class);
+
+        String gotAccessToken = loginResponse.accessToken();
+
+        //then
+        Mockito.verify(userService).login(request.username(), request.password());
+
+        assertEquals(expectedAccessToken, gotAccessToken);
+    }
+
+    @Test
+    public void shouldNotLoginWithInvalidData() throws Exception {
+
+        //given
+        LoginRequest request = new LoginRequest("kamil", "nowak");
+
+        String encodedRequest = objectMapper.writeValueAsString(request);
+
+        //when
+        Mockito.when(userService.login(anyString(), anyString())).thenThrow(IllegalArgumentException.class);
+
+        mockMvc.perform(
+            post(API_URL_PREFIX + "/login")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(encodedRequest)
+        )
+        .andDo(print());
+//        .andExpect(status().isBadRequest());
+
+        //then
+        Mockito.verify(userService).login(anyString(), anyString());
     }
 
     @Test

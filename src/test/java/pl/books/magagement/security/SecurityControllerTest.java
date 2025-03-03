@@ -71,10 +71,10 @@ class SecurityControllerTest {
 
         String gotContent = mvcResult.getResponse().getContentAsString();
 
-        assertEquals("login", gotContent);
-    }
         //then
 
+        assertEquals("login", gotContent);
+    }
 
     @Test
     void notLoggedUserShouldNotAccess() throws Exception {

@@ -1,6 +1,7 @@
 package pl.books.magagement.controller;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import pl.books.magagement.model.api.request.LoginRequest;
-import pl.books.magagement.model.api.request.PatchUserRequest;
-import pl.books.magagement.model.api.request.RegisterRequest;
-import pl.books.magagement.model.api.request.UserSearchCriteriaRequest;
+import pl.books.magagement.model.api.request.*;
 import pl.books.magagement.model.api.response.LoginResponse;
 import pl.books.magagement.model.api.response.UserResponse;
 import pl.books.magagement.model.entity.RoleEntity;
@@ -22,6 +20,7 @@ import pl.books.magagement.model.entity.UserEntity;
 import pl.books.magagement.model.internal.PatchUser;
 import pl.books.magagement.model.internal.UserSearchCriteria;
 import pl.books.magagement.model.mappers.UserMapper;
+import pl.books.magagement.service.RevokedRefreshTokenService;
 import pl.books.magagement.service.RoleService;
 import pl.books.magagement.service.UserService;
 
@@ -37,6 +36,7 @@ public class UserController {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final RevokedRefreshTokenService revokedRefreshTokenService;
 
     private final UserMapper userMapper;
 
@@ -55,11 +55,31 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
 
-        String accessToken = userService.login(loginRequest.username(), loginRequest.password());
+        log.debug("Login started");
 
-        LoginResponse response = new LoginResponse(accessToken);
+        LoginResponse response = userService.login(loginRequest.username(), loginRequest.password());
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh-access-token")
+    public ResponseEntity<LoginResponse> refresh(@RequestBody RefreshTokenRequest request){
+
+        String refreshToken = request.refreshToken();
+
+        LoginResponse response = userService.refreshAccessToken(refreshToken);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request){
+
+        String token = request.getHeader("Authorization").substring(6);
+
+        revokedRefreshTokenService.addToken(token);
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping

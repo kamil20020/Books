@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -21,8 +22,12 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import pl.books.magagement.config.JwtFilter;
+import pl.books.magagement.config.JwtService;
+import pl.books.magagement.model.api.request.LoginRequest;
 import pl.books.magagement.model.api.request.PatchUserRequest;
 import pl.books.magagement.model.api.request.RegisterRequest;
+import pl.books.magagement.model.api.response.LoginResponse;
 import pl.books.magagement.model.api.response.UserResponse;
 import pl.books.magagement.model.entity.RoleEntity;
 import pl.books.magagement.model.entity.UserEntity;
@@ -63,6 +68,12 @@ class UserControllerTestIT {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -194,6 +205,33 @@ class UserControllerTestIT {
             .containsAll(List.of("ADMIN", "WRITER"));
 
         assertTrue(grantedRolesExist);
+    }
+
+    @Test
+    public void shouldLogin(){
+
+        //given
+        createAdmin("kamil", "nowak");
+
+        LoginRequest request = new LoginRequest("kamil", "nowak");
+
+        //when
+        LoginResponse response = RestAssured
+        .given()
+            .contentType(ContentType.JSON)
+            .body(request)
+        .when()
+            .post("/login")
+        .then()
+            .statusCode(200)
+            .extract()
+            .as(LoginResponse.class);
+
+        String accessToken = response.accessToken();
+
+        //then
+        assertDoesNotThrow(() -> jwtService.verifyToken(accessToken));
+        assertEquals("kamil", jwtService.getUsername(accessToken));
     }
 
     @Test
