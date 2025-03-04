@@ -9,7 +9,7 @@ import Publishers from "./pages/Publishers";
 import Roles from "./pages/Roles";
 import Authors from "./pages/Authors";
 import Home from "./pages/Home";
-import Header from "./layout/Header";
+import Header from "./layout/header/Header";
 import Navigation from "./layout/Navigation";
 import Footer from "./layout/Footer";
 import Content from "./layout/Content";
@@ -21,6 +21,7 @@ function App() {
       <Content>
         <Routes>
           <Route index element={<Home />} />
+          <Route path="/management-frontend" element={<Home />} />
           <Route path="/books" element={<Books />} />
           <Route path="/publishers" element={<Publishers />} />
           <Route path="/authors" element={<Authors />} />

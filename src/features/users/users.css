@@ -1,0 +1,55 @@
+﻿.user-roles{
+    display: flex;
+    flex-direction: column; 
+    align-items: start;
+    row-gap: 12px;
+}
+
+.data{
+    width: 50%;
+}
+
+.search-users{
+    display: flex;
+    align-items: center;
+    column-gap: 12px;
+    margin-top: 16px;
+}
+
+.row{
+    border: 1px solid silver;
+    padding: 22px 42px 42px 42px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+}
+
+.search-users > input{
+    padding: 8px 12px;
+    border: 1px solid silver;
+    border-radius: 8px;
+}
+
+.search-users > button{
+    padding: 12px 18px;
+}
+
+.add-user{
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .data{
+        width: 90%;
+    }
+}
+  
+@media (max-width: 768px) {
+  
+    .data{
+        width: 90%;
+    }
+}

@@ -10,6 +10,7 @@ import Role from "../models/api/response/role";
 import AddButton from "../components/AddButton";
 import AddUser from "../features/users/AddUser";
 import EditUser from "../features/users/EditUser";
+import "../features/users/users.css"
 
 const Users = () => {
 

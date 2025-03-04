@@ -1,0 +1,102 @@
+﻿.remove-button {
+    background-color: red;
+}
+
+.remove-button:hover {
+    background-color: rgb(181, 0, 0);
+}
+
+.add-button {
+    background-color: teal;
+    margin-top: 16px;
+}
+
+.add-button:hover {
+    background-color: rgb(2, 72, 72);
+}
+
+.dialog-cover {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.dialog {
+    border: 1px solid silver;
+    width: 25%;
+    min-height: fit-content;
+    opacity: 1;
+    z-index: 1000;
+    border-radius: 16px;
+    padding: 16px 38px 38px 38px;
+    justify-content: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    row-gap: 26px;
+}
+
+.confirmation-dialog {
+    display: grid;
+    grid-template-columns: 33% 33%;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-grow: 1;
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    padding: 12px 20px;
+    font-weight: bold;
+    border-radius: 12px;
+    font-size: calc(var(--current-font-size) - 2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-error {
+    background-color: red;
+}
+
+.notification-success {
+    background-color: green;
+}
+
+.notification-error {
+    background-color: red;
+}
+
+.notification-icon {
+    color: white;
+}
+
+.validated-input > input {
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: none;
+    border: 1.5px solid silver;
+}
+
+.validated-input > input:focus {
+    border-color: black;
+    outline: none;
+}
+
+.input-error {
+    color: rgb(169, 0, 0);
+    font-size: calc(var(--current-font-size) - 4px);
+    font-weight: bold;
+}

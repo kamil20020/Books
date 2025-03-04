@@ -1,4 +1,6 @@
-﻿const Content = (props: {
+﻿import "./layout.css"
+
+const Content = (props: {
     children: React.ReactNode
 }) => {
 

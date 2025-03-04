@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router';
 import { RolesProvider } from './context/RolesContext';
 import { NotificationProvider } from './context/NotificationContext';
+import './index.css';
+import "./components/components.css"
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
