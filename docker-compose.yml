@@ -1,0 +1,47 @@
+services:
+  db:
+    container_name: management-db
+    image: kamil20/management-db:latest
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      POSTGRES_DB: books
+      POSTGRES_USER: books
+      POSTGRES_PASSWORD: books-password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+
+  backend:
+    container_name: management-backend
+    image: kamil20/management-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/books
+      SPRING_DATASOURCE_USERNAME: books
+      SPRING_DATASOURCE_PASSWORD: books-password
+      SERVER_PORT: 9000
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+
+  frontend:
+    container_name: managemnt-frontend
+    image: kamil20/management-frontend-dev:latest
+    build:
+      context: /frontend
+      dockerfile: Dockerfile-dev
+      args:
+       - REACT_APP_API=backend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
