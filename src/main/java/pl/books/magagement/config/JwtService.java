@@ -9,6 +9,7 @@ import pl.books.magagement.model.entity.UserEntity;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -34,8 +35,8 @@ public class JwtService {
 
     private final KeyFactory keyFactory;
 
-    private static final String privateKeyFilePath = "classpath:rsa/private_key.pkcs8";
-    private static final String publicKeyFilePath = "classpath:rsa/public_key.x509";
+    private static final String privateKeyFilePath = "rsa/private_key.pkcs8";
+    private static final String publicKeyFilePath = "rsa/public_key.x509";
     private static final String audience = "books";
     private static final String issuer = "books";
 
@@ -59,21 +60,20 @@ public class JwtService {
         byte[] privateKeyBytes = privKey.getEncoded();
 
         String privateKeyBase64 = Base64.getEncoder().encodeToString(privateKeyBytes);
-        Files.write(Paths.get("private_key.pkcs8"), privateKeyBase64.getBytes());
+        Files.write(Paths.get(privateKeyFilePath), privateKeyBase64.getBytes());
 
         byte[] publicKeyBytes = pubKey.getEncoded();
 
         String publicKeyBase64 = Base64.getEncoder().encodeToString(publicKeyBytes);
-        Files.write(Paths.get("public_key.x509"), publicKeyBase64.getBytes());
+        Files.write(Paths.get(publicKeyFilePath), publicKeyBase64.getBytes());
     }
 
     private byte[] getKeyBytes(String filePath) throws IOException {
 
-        File keyFile = ResourceUtils.getFile(filePath);
+        InputStream keyFileInputStream = getClass().getClassLoader().getResourceAsStream(filePath);
+        byte[] keyBytes = keyFileInputStream.readAllBytes();
 
-        String keyStr = Files.readString(keyFile.toPath());
-
-        return Base64.getDecoder().decode(keyStr);
+        return Base64.getDecoder().decode(keyBytes);
     }
 
     private PrivateKey getPrivateKey() throws IOException, InvalidKeySpecException {
