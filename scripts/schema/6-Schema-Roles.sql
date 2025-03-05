@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS ROLES(
+    role_id UUID,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    CONSTRAINT pk_roles PRIMARY KEY (role_id)
+);

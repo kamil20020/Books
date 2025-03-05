@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS USERS(
+    user_id UUID,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(72) NOT NULL,
+    CONSTRAINT pk_users PRIMARY KEY (user_id)
+);

@@ -1,0 +1,4 @@
+INSERT INTO ROLES
+VALUES
+    ('913b7862-f8f6-4e7d-8e5b-48a00dce4879', 'ADMIN'),
+    ('71be9623-5afa-48a9-a821-589fd066cd14', 'WRITER');
