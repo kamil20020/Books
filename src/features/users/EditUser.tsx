@@ -26,11 +26,13 @@ const EditUser = (props: {
         repeatedPassword: ""
     })
 
-    const [errors, setErrors] = useState<FormProps>({
+    const initErrors: FormProps = {
         username: "",
         password: "",
         repeatedPassword: ""
-    })
+    }
+
+    const [errors, setErrors] = useState<FormProps>({...initErrors})
 
     const setNotification = useNotificationContext().setNotification
 
@@ -83,11 +85,7 @@ const EditUser = (props: {
 
         let formPassed = true
 
-        const newErrors: FormProps = {
-            username: "",
-            password: "",
-            repeatedPassword: ""
-        }
+        const newErrors: FormProps = {...initErrors}
 
         if(!FormService.validateRequired(form.username)){
             newErrors.username = FormService.isRequiredMessage
@@ -128,7 +126,10 @@ const EditUser = (props: {
                             value: form.username
                         }}
                         errorMessage={errors.username}
-                        onChange={(newValue: string) => setForm({...form, username: newValue})}                    
+                        onChange={(newValue: string) => {
+                            setForm({...form, username: newValue})
+                            setErrors({...errors, username: ""})
+                        }}                    
                     />
                      {/* <ValidatedInput 
                         inputProps={{

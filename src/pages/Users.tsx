@@ -50,6 +50,9 @@ const Users = () => {
             setUsers([...users, ...pagedResponse.content])
             setPage(searchPage)
         })
+        .catch((error) => {
+            console.log(error)
+        })
     }
 
     const handleSearchAndReplace = () => {
@@ -73,6 +76,9 @@ const Users = () => {
             setPage(0)
             setTotalElements(pagedResponse.totalElements)
             totalPages.current = pagedResponse.totalPages
+        })
+        .catch((error) => {
+            console.log(error)
         })
     }
 

@@ -7,6 +7,7 @@ import { RolesProvider } from './context/RolesContext';
 import { NotificationProvider } from './context/NotificationContext';
 import './index.css';
 import "./components/components.css"
+import { AuthProvider } from './context/AuthContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,11 +18,13 @@ const urlPostFix = process.env.REACT_APP_URL_POSTFIX
 root.render(
   <React.StrictMode>
     <BrowserRouter basename={`/${urlPostFix}`}>
-      <NotificationProvider content={
-          <RolesProvider content={
-            <App />
-          }/>
+    <NotificationProvider content={
+      <AuthProvider content={
+        <RolesProvider content={
+          <App />
+        }/>
       }/>
+    }/>
     </BrowserRouter>
   </React.StrictMode>
 );

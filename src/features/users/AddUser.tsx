@@ -23,11 +23,13 @@ const AddUser = (props: {
         repeatedPassword: ""
     })
 
-    const [errors, setErrors] = useState<FormProps>({
+    const initErrors: FormProps = {
         username: "",
         password: "",
         repeatedPassword: ""
-    })
+    }
+
+    const [errors, setErrors] = useState<FormProps>({...initErrors})
 
     const setNotification = useNotificationContext().setNotification
 
@@ -77,11 +79,7 @@ const AddUser = (props: {
 
         let testPassed = true
 
-        const newErrors: FormProps = {
-            username: "",
-            password: "",
-            repeatedPassword: ""
-        }
+        const newErrors: FormProps = {...initErrors}
 
         if(!FormService.validateRequired(form.username)){
             newErrors.username = FormService.isRequiredMessage
@@ -123,7 +121,10 @@ const AddUser = (props: {
                             placeholder: "Login"
                         }}
                         errorMessage={errors.username}
-                        onChange={(newValue: string) => setForm({...form, username: newValue})}
+                        onChange={(newValue: string) => {
+                            setForm({...form, username: newValue})
+                            setErrors({...errors, username: ""})
+                        }}
                     />
                     <ValidatedInput 
                         inputProps={{
@@ -131,7 +132,10 @@ const AddUser = (props: {
                             placeholder: "Hasło"
                         }}
                         errorMessage={errors.password}
-                        onChange={(newValue: string) => setForm({...form, password: newValue})}
+                        onChange={(newValue: string) => {
+                            setForm({...form, password: newValue})
+                            setErrors({...errors, password: ""})
+                        }}
                     />
                     <ValidatedInput 
                         inputProps={{
@@ -139,7 +143,10 @@ const AddUser = (props: {
                             placeholder: "Powtórz hasło"
                         }}
                         errorMessage={errors.repeatedPassword}
-                        onChange={(newValue: string) => setForm({...form, repeatedPassword: newValue})}
+                        onChange={(newValue: string) => {
+                            setForm({...form, repeatedPassword: newValue})
+                            setErrors({...errors, repeatedPassword: ""})
+                        }}
                     />
                 </div>
             }

@@ -18,7 +18,8 @@ header > img{
 
 .header-actions{
     display: flex;
-    column-gap: 12px;
+    column-gap: 16px;
+    align-items: center;
 }
 
 nav{

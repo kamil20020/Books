@@ -1,0 +1,6 @@
+﻿.login{
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    row-gap: 18px;
+}

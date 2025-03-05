@@ -32,6 +32,9 @@ const UserRow = (props: {
                 status: NotificationStatus.SUCCESS
             })
         })
+        .catch((error) => {
+            console.log(error)
+        })
     }
 
     return (

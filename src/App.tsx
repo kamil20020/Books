@@ -13,6 +13,7 @@ import Header from "./layout/header/Header";
 import Navigation from "./layout/Navigation";
 import Footer from "./layout/Footer";
 import Content from "./layout/Content";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -25,8 +26,20 @@ function App() {
           <Route path="/books" element={<Books />} />
           <Route path="/publishers" element={<Publishers />} />
           <Route path="/authors" element={<Authors />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/roles" element={<Roles />} />
+          <Route path="/users" element={
+            <ProtectedRoute 
+              isRequiredAdmin 
+              content={
+                <Users />
+            }/>
+          } />
+          <Route path="/roles" element={
+              <ProtectedRoute 
+                isRequiredAdmin 
+                content={
+                  <Roles />
+              }/>
+          } />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Content>

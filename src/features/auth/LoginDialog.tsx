@@ -12,7 +12,7 @@ const LoginDialog = (props: {
                 title="Logowanie"
                 isOpened={props.isOpened}
                 content={
-                    <Login/>
+                    <Login onAccept={props.onClose}/>
                 }
                 onClose={props.onClose}
             />

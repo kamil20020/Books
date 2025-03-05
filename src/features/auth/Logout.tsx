@@ -1,8 +1,28 @@
-﻿const Logout = () => {
+﻿import { useAuthContext } from "../../context/AuthContext"
+import { NotificationStatus, useNotificationContext } from "../../context/NotificationContext"
+
+const Logout = () => {
+
+    const logout = useAuthContext().logout
+    const setNotification = useNotificationContext().setNotification
 
     const handleLogout = () => {
 
-        console.log("Logout")
+        logout()
+        .then(() => {
+            setNotification({
+                message: "Udało się wylogować",
+                status: NotificationStatus.SUCCESS
+            })
+        })
+        .catch((error) => {
+            console.log(error)
+
+            setNotification({
+                message: "Nie udało się wylogować",
+                status: NotificationStatus.ERROR
+            })
+        })
     }
 
     return (

@@ -116,3 +116,9 @@ a:hover{
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
+
+.page-error{
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
