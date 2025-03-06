@@ -159,7 +159,11 @@ public class JwtService {
 
     public String generateRefreshToken(UserEntity user){
 
-        return generateToken(user, refreshTokenExpiration, new HashMap<>());
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put("username", user.getUsername());
+
+        return generateToken(user, refreshTokenExpiration, claims);
     }
 
     private String generateToken(UserEntity user, long tokenExpiration, Map<String, Object> claims){

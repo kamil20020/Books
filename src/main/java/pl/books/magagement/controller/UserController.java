@@ -36,7 +36,6 @@ public class UserController {
 
     private final UserService userService;
     private final RoleService roleService;
-    private final RevokedRefreshTokenService revokedRefreshTokenService;
 
     private final UserMapper userMapper;
 
@@ -63,9 +62,9 @@ public class UserController {
     }
 
     @PostMapping("/refresh-access-token")
-    public ResponseEntity<LoginResponse> refresh(@RequestBody RefreshTokenRequest request){
+    public ResponseEntity<LoginResponse> refresh(HttpServletRequest request){
 
-        String refreshToken = request.refreshToken();
+        String refreshToken = request.getHeader("Authorization").substring(6);
 
         LoginResponse response = userService.refreshAccessToken(refreshToken);
 
@@ -77,7 +76,7 @@ public class UserController {
 
         String token = request.getHeader("Authorization").substring(6);
 
-        revokedRefreshTokenService.addToken(token);
+        userService.logout(token);
 
         return ResponseEntity.ok().build();
     }

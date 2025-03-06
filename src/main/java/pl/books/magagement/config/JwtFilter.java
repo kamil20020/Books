@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import pl.books.magagement.service.UserService;
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -35,13 +37,23 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if(authHeader != null){
 
-            handleAuthentication(authHeader);
+            try {
+                handleAuthentication(authHeader);
+            }
+            catch(IllegalArgumentException e){
+
+                log.error(e.getMessage());
+
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void handleAuthentication(String authHeader){
+    private void handleAuthentication(String authHeader) throws IllegalArgumentException{
 
         String accessToken = authHeader.substring(6);
 
