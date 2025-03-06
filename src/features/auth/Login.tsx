@@ -11,6 +11,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import { NotificationStatus, useNotificationContext } from "../../context/NotificationContext";
 
 const LoginView = (props: {
+    shouldShowTitle?: boolean,
     onAccept?: () => void
 }) => {
 
@@ -79,6 +80,13 @@ const LoginView = (props: {
 
     return (
         <div className="login">
+            {props.shouldShowTitle &&
+                <h2 
+                    style={{textAlign: "center"}}
+                >
+                    Logowanie
+                </h2>
+            }
            <ValidatedInput 
                 inputProps={{
                     type: "text",

@@ -11,13 +11,15 @@ const ProtectedRoute = (props: {
 }) => {
 
     const authContext = useAuthContext()
-    const isUserLogged = authContext.isUserLogged
     const isUserAdmin = authContext.isUserAdmin()
+    const isUserLogged = authContext.isUserLogged || isUserAdmin
 
-    if(props.isRequiredLogin && !isUserLogged){
+    const isRequiredLogin = props.isRequiredLogin || props.isRequiredAdmin
+
+    if(isRequiredLogin && !isUserLogged){
 
         return (
-            <Login/>
+            <Login shouldShowTitle/>
         )
     }
 

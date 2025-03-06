@@ -7,15 +7,83 @@ import Tokens from "../models/api/response/tokens";
 import { NotificationStatus, useNotificationContext } from "./NotificationContext";
 import { unstable_batchedUpdates } from "react-dom";
 import User from "../models/api/response/user";
+import { r } from "react-router/dist/development/fog-of-war-Ckdfl79L";
+
+const getTokensFromStorage = (): Tokens => {
+
+    const rawTokens = localStorage.getItem("tokens") as string
+
+    if(!rawTokens){
+        throw new Error("Tokens are not set in storage")
+    }
+
+    return JSON.parse(rawTokens)
+}
+
+const clearStorage = () => {
+
+    localStorage.removeItem("user")
+    localStorage.removeItem("tokens")
+}
+
+const setTokensToStorage = (tokens: Tokens) => {
+
+    const encodedTokens = JSON.stringify(tokens)
+
+    localStorage.setItem("tokens", encodedTokens)
+}
+
+const isStorageClear = (): boolean => {
+
+    return localStorage.getItem("tokens") == null
+}
+
+const handleUnauthorizedResponse = () => {
+
+    if(isStorageClear()){
+        return;
+    }
+
+    const tokens = getTokensFromStorage()
+    const refreshToken = tokens.refreshToken
+
+    AuthService.refreshAccessToken(refreshToken)
+    .then((response) => {
+
+        console.log(response.data)
+
+        const tokens: Tokens = response.data
+        
+        setTokensToStorage(tokens)
+    })
+    .catch((error) => {
+
+        console.log(error)
+
+        if(error.status == 401){
+            clearStorage()
+        }
+    })
+}
+
+axios.interceptors.response.use((response) => {
+
+    return response
+
+}, (error) => {
+
+    console.log(error)
+
+    if(error.status = 401){
+
+        handleUnauthorizedResponse()
+    }
+
+    return Promise.reject(error)
+})
 
 enum RoleName{
     ADMIN="ADMIN"
-}
-
-interface StorageProps{
-    user: User | null,
-    tokens: Tokens,
-    isUserLogged: boolean
 }
 
 interface AuthContextType{
@@ -35,34 +103,37 @@ export const AuthProvider = (props: {
     const [user, setUser] = useState<User | null>(null)
     const [isUserLogged, setIsUserLogged] = useState<boolean>(false)
 
-    const initUser = (rawUser: string) => {
+    useEffect(() => {
 
-        const storageUser: StorageProps = JSON.parse(rawUser)
+        if(isStorageClear()){
 
-        setUser(storageUser.user)
-        setIsUserLogged(storageUser.isUserLogged)
+            if(isUserLogged){
+                clearUser()
+            }
+
+            return;
+        }
+
+        const tokens: Tokens = getTokensFromStorage()
+        const userData: User = AuthService.extractUserFromAccessToken(tokens.accessToken)
+
+        handleLoggedUser(userData, tokens)
+
+    }, [localStorage])
+
+    const clearUser = () => {
+
+        setUser(null)
+        setIsUserLogged(false)
     }
 
-    const initTokens = (rawTokens: string) => {
+    const handleLoggedUser = (user: User, tokens: Tokens) => {
 
-        const tokens: Tokens = JSON.parse(rawTokens)
+        setUser(user)
+        setIsUserLogged(true)
 
         AuthService.configureAuthHeader(tokens.accessToken)
     }
-
-    useEffect(() => {
-
-        const rawStorageUser = localStorage.getItem("user")
-
-        if(!rawStorageUser){
-            return
-        }
-
-        const rawStorageTokens = localStorage.getItem("tokens") as string
-
-        initUser(rawStorageUser)
-        initTokens(rawStorageTokens)
-    }, [])
 
     const login = (request: Login): Promise<string> => {
 
@@ -72,20 +143,11 @@ export const AuthProvider = (props: {
             .then((response) => {
     
                 const tokens: Tokens = response.data
-
                 const userData: User = AuthService.extractUserFromAccessToken(tokens.accessToken)
-                
-                setUser(userData)
-                setIsUserLogged(true)
-    
-                const storageUser: StorageProps = {
-                    user: userData,
-                    isUserLogged: true,
-                    tokens: tokens
-                }
-        
-                localStorage.setItem("user", JSON.stringify(storageUser))
-                localStorage.setItem("tokens", JSON.stringify(tokens))
+
+                handleLoggedUser(userData, tokens)
+
+                setTokensToStorage(tokens)
 
                 resolve("Success")
             })
@@ -103,6 +165,9 @@ export const AuthProvider = (props: {
             throw new Error("User is not logged")
         }
 
+        clearUser()
+        clearStorage()
+
         return new Promise((resolve, reject) => {
 
             AuthService.logout()
@@ -110,16 +175,21 @@ export const AuthProvider = (props: {
     
                 console.log(response.data)
                 
-                setUser(null)
-                setIsUserLogged(false)
-    
-                localStorage.removeItem("user")
-                localStorage.removeItem("tokens")
+                AuthService.configureAuthHeader(null)
 
                 resolve("Success")
             })
             .catch((error) => {
                 console.log(error)
+
+                if(error.status == 401){
+
+                    console.log(error)
+
+                    AuthService.configureAuthHeader(null)
+
+                    resolve("Success")
+                }
 
                 reject(error.response.data)
             })

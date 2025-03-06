@@ -17,7 +17,16 @@ class AuthService {
         return axios.post(`${this.apiUrl}/logout`)
     }
 
-    extractUserFromAccessToken = (data: string): User => {
+    refreshAccessToken(refreshToken: string){
+
+        return axios.post(`${this.apiUrl}/refresh-access-token`, {}, {
+            headers: {
+                Authorization: `Bearer ${refreshToken}`
+            }
+        })
+    }
+
+    extractUserFromAccessToken(data: string){
 
         const jwtObj = jwtDecode(data)
 
@@ -30,9 +39,9 @@ class AuthService {
         }
     }
 
-    configureAuthHeader(token: string){
+    configureAuthHeader(token: string | null){
 
-        axios.defaults.headers["Authorization"] = `Bearer ${token}`
+        axios.defaults.headers["Authorization"] = token ? `Bearer ${token}` : null
     }
 }
 
