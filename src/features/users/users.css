@@ -40,12 +40,6 @@
     flex-direction: column;
     row-gap: 16px;
 }
-
-@media (max-width: 768px) {
-    .data{
-        width: 90%;
-    }
-}
   
 @media (max-width: 768px) {
   

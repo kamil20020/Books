@@ -100,3 +100,31 @@
     font-size: calc(var(--current-font-size) - 4px);
     font-weight: bold;
 }
+
+@media (max-width: 1200px) {
+  
+    .dialog{
+        width: 30%!important;
+    }
+}
+
+@media (max-width: 992px) {
+  
+    .dialog{
+        width: 40%!important;
+    }
+}
+
+@media (max-width: 768px) {
+  
+    .dialog{
+        width: 60%!important;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .dialog{
+        width: 80%!important;
+    }
+}
