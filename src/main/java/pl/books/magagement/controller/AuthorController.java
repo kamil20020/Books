@@ -63,7 +63,7 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAuthorHeader);
     }
 
-    @DeleteMapping(value = "/{authorId}/")
+    @DeleteMapping(value = "/{authorId}")
     public ResponseEntity<Void> deleteById(@PathVariable("authorId") String authorIdStr){
 
         UUID authorId = UUID.fromString(authorIdStr);
