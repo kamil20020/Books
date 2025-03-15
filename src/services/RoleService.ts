@@ -1,5 +1,6 @@
 ﻿import axios from "axios"
 import Pageable from "../models/api/request/pageable"
+import CreateRole from "../models/api/request/createRole"
 
 class RoleService{
 
@@ -12,6 +13,11 @@ class RoleService{
                 ...pageable
             }
         })
+    }
+
+    create(request: CreateRole){
+        
+        return axios.post(this.api, request)
     }
 }
 

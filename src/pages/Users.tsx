@@ -119,7 +119,7 @@ const Users = () => {
     return (
         <>
             <ContentHeader title="Użytkownicy"/>
-            <div className="data" style={{display: "flex", flexDirection: "column", justifyContent: "start", rowGap: 32}}>
+            <div className="users">
                 <div className="search-users">
                     <input 
                         type="text" 

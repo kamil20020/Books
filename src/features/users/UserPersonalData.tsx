@@ -8,7 +8,7 @@ const UserPersonalData = (props: {
     const user = props.user
 
     return (
-        <div>
+        <div className="personal-data">
             <p>Id: {user.id} </p>
             <p>Nazwa użytkownika: {user.username}</p>
         </div>

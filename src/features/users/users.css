@@ -5,8 +5,12 @@
     row-gap: 12px;
 }
 
-.data{
-    width: 50%;
+.users{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 32px;
 }
 
 .search-users{
@@ -16,7 +20,7 @@
     margin-top: 16px;
 }
 
-.row{
+.user-row{
     border: 1px solid silver;
     padding: 22px 42px 42px 42px;
     border-radius: 12px;

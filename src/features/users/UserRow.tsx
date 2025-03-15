@@ -38,7 +38,7 @@ const UserRow = (props: {
     }
 
     return (
-        <div key={user.id} className="row">
+        <div key={user.id} className="user-row">
             <h3>Dane</h3>
             <UserPersonalData user={user}/>
             <h3>Role</h3>

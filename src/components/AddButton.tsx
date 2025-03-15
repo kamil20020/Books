@@ -25,7 +25,16 @@ const AddButton = (props: {
             <button 
                 className="add-button"
                 style={{...props.style}}
-                onClick={() => !props.showDialog ? props.onClick() : setIsOpened(true)}
+                onClick={() => {
+
+                    if(props.showDialog){
+
+                        setIsOpened(true)
+                        return;
+                    }
+
+                    props.onClick()
+                }}
             >
                 {props.title ? props.title : "Dodaj"}
             </button>
