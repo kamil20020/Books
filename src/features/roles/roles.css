@@ -16,3 +16,17 @@
     align-self: stretch;
     margin-top: 26px;
 }
+
+@media (max-width: 768px){
+
+    .roles{
+        width: 90%;
+    }
+}
+
+@media (max-width: 1280px){
+
+    .roles{
+        width: 85%;
+    }
+}

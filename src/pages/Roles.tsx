@@ -14,7 +14,7 @@ const Roles = () => {
     const [roles, setRoles] = useState<Role[]>([])
     const pageNumber = useRef<number>(0)
     const totalElements = useRef<number>(0)
-    const pageSize = 10
+    const pageSize = 2
 
     useEffect(() => {
 
@@ -34,7 +34,7 @@ const Roles = () => {
             const newRolesPage: Page<Role> = response.data
 
             pageNumber.current = newRolesPage.number
-            totalElements.current = page
+            totalElements.current = newRolesPage.totalElements
             setRoles([...roles, ...newRolesPage.content])
 
             console.log(roles)
@@ -68,6 +68,12 @@ const Roles = () => {
                         onRemove={handleRemove}
                     />
                 ))}
+                {roles.length < totalElements.current &&
+                    <AddButton
+                        title="Załaduj dane"
+                        onClick={() => handleSearchAndAppend(pageNumber.current + 1)}
+                    />
+                }
             </div>
         </>
     )
