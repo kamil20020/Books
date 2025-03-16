@@ -148,10 +148,13 @@ class RoleServiceTest {
         //given
         String roleName = "ADMIN";
 
+        RoleEntity role = new RoleEntity(UUID.randomUUID(), roleName);
+
         //when
         Mockito.when(roleRepository.existsByNameIgnoreCase(anyString())).thenReturn(false);
+        Mockito.when(roleRepository.save(any())).thenReturn(role);
 
-        roleService.createRole(roleName);
+        RoleEntity createdRole = roleService.createRole(roleName);
 
         //then
         ArgumentCaptor<RoleEntity> newRoleCaptor = ArgumentCaptor.forClass(RoleEntity.class);
@@ -162,6 +165,7 @@ class RoleServiceTest {
         RoleEntity gotRole = newRoleCaptor.getValue();
 
         assertEquals(roleName, gotRole.getName());
+        assertEquals(roleName, createdRole.getName());
     }
 
     @Test

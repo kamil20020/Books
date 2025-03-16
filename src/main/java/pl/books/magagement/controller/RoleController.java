@@ -12,6 +12,8 @@ import pl.books.magagement.model.api.request.CreateRoleRequest;
 import pl.books.magagement.model.entity.RoleEntity;
 import pl.books.magagement.service.RoleService;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/roles")
@@ -28,10 +30,20 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createRole(@RequestBody @Valid CreateRoleRequest createRoleRequest){
+    public ResponseEntity<RoleEntity> createRole(@RequestBody @Valid CreateRoleRequest createRoleRequest){
 
-        roleService.createRole(createRoleRequest.name());
+        RoleEntity createdRole = roleService.createRole(createRoleRequest.name());
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
+    }
+
+    @DeleteMapping(value = "/{roleId}")
+    public ResponseEntity<Void> deleteRoleById(@PathVariable("roleId") String roleIdStr){
+
+        UUID roleId = UUID.fromString(roleIdStr);
+
+        roleService.deleteById(roleId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

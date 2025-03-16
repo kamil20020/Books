@@ -2,6 +2,7 @@ package pl.books.magagement.controller.integration;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -137,5 +139,31 @@ class RoleControllerTestIT {
 
         //then
         assertEquals(1, roleRepository.count());
+    }
+
+    @Test
+    public void shouldDeleteById(){
+
+        //given
+        createAdmin("adam", "nowak");
+
+        RoleEntity role = roleRepository.findAll().get(0);
+
+        String accessToken = userService.login("adam", "nowak").accessToken();
+
+        //when
+        RestAssured
+            .given()
+                .header(new Header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer " + accessToken
+                ))
+            .when()
+                .delete("/{roleId}", role.getId())
+            .then()
+                .statusCode(204);
+
+        //then
+        assertEquals(0, roleRepository.count());
     }
 }

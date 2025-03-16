@@ -48,7 +48,7 @@ public class RoleService {
     }
 
     @Transactional
-    public void createRole(String name) throws EntityExistsException{
+    public RoleEntity createRole(String name) throws EntityExistsException{
 
         if(roleRepository.existsByNameIgnoreCase(name)){
             throw new EntityExistsException("Duplicate role name");
@@ -56,7 +56,7 @@ public class RoleService {
 
         RoleEntity newRole = new RoleEntity(name.toUpperCase());
 
-        roleRepository.save(newRole);
+        return roleRepository.save(newRole);
     }
 
     @Transactional
@@ -85,5 +85,15 @@ public class RoleService {
         }
 
         foundUser.getRoles().remove(foundRole);
+    }
+
+    @Transactional
+    public void deleteById(UUID roleId) throws EntityNotFoundException{
+
+        if(!roleRepository.existsById(roleId)){
+            throw new EntityNotFoundException("Role was not found by given id");
+        }
+
+        roleRepository.deleteById(roleId);
     }
 }

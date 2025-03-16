@@ -14,11 +14,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import pl.books.magagement.config.CustomAccessDeniedHandler;
+import pl.books.magagement.config.JwtFilter;
 import pl.books.magagement.config.SecurityConfig;
 import pl.books.magagement.controller.RoleController;
 import pl.books.magagement.model.api.request.CreateRoleRequest;
+import pl.books.magagement.model.entity.RoleEntity;
 import pl.books.magagement.service.RoleService;
 import pl.books.magagement.service.UserService;
 
@@ -43,6 +47,12 @@ class RoleControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private JwtFilter jwtFilter;
+
+    @MockBean
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
     private final ObjectMapper objectMapper;
 
     public RoleControllerTest(){
@@ -61,7 +71,7 @@ class RoleControllerTest {
         String createRoleRequestJson = objectMapper.writeValueAsString(createRoleRequest);
 
         //when
-        mockMvc.perform(
+        MvcResult response = mockMvc.perform(
             post(API_URL_PREFIX)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(createRoleRequestJson)
@@ -70,7 +80,12 @@ class RoleControllerTest {
         .andExpect(status().isCreated())
         .andReturn();
 
+        String extractedBody = response.getResponse().getContentAsString();
+        RoleEntity createdRole = objectMapper.readValue(extractedBody, RoleEntity.class);
+
         //then
+        assertEquals("ADMIN", createdRole.getName());
+
         Mockito.verify(roleService).createRole("ADMIN");
     }
 
