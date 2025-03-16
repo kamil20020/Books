@@ -19,6 +19,11 @@ class RoleService{
         
         return axios.post(this.api, request)
     }
+
+    deleteById(roleId: string){
+
+        return axios.delete(`${this.api}/${roleId}`)
+    }
 }
 
 export default new RoleService()

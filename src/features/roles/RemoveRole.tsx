@@ -15,12 +15,23 @@ const RemoveRole = (props: {
 
     const handleRemove = () => {
 
-        setNotification({
-            message: "Usunięto rolę",
-            status: NotificationStatus.SUCCESS
-        })
+        RoleService.deleteById(role.id)
+        .then((response) => {
 
-        props.onRemove(role.id)
+            props.onRemove(role.id)
+
+            setNotification({
+                message: "Usunięto rolę",
+                status: NotificationStatus.SUCCESS
+            })
+        })
+        .catch((error) => {
+            
+            setNotification({
+                message: error.response.data,
+                status: NotificationStatus.ERROR
+            })
+        })
     }
 
     return (

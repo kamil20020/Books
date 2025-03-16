@@ -47,7 +47,16 @@ const AddRole = (props: {
             })
         })
         .catch((error) => {
+
             console.log(error)
+
+            if(error.response.status == 409){
+
+                setNotification({
+                    message: "Istnieje już rola o takiej nazwie",
+                    status: NotificationStatus.ERROR
+                })
+            }
         })
     }
 

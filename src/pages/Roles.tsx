@@ -44,6 +44,7 @@ const Roles = () => {
     const handleAdd = (newRole: Role) => {
 
         setRoles([newRole, ...roles])
+        totalElements.current++
     }
 
     const handleRemove = (removedRoleId: string) => {
@@ -52,6 +53,7 @@ const Roles = () => {
             .filter((role: Role) => role.id !== removedRoleId)
 
         setRoles(newRoles)
+        totalElements.current--
     }
 
     return (
