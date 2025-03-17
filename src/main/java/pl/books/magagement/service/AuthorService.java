@@ -83,7 +83,11 @@ public class AuthorService {
             throw new EntityNotFoundException("Author was not found by given id");
         }
 
-        gotAuthorOpt.get().setBooks(new HashSet<>());
+        AuthorEntity gotAuthor = gotAuthorOpt.get();
+
+        gotAuthor.getBooks().forEach(book -> {
+            book.getAuthors().remove(gotAuthor);
+        });
 
         authorRepository.deleteById(authorId);
     }

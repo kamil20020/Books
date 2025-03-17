@@ -9,6 +9,8 @@ import pl.books.magagement.model.entity.AuthorEntity;
 import pl.books.magagement.model.entity.PublisherEntity;
 import pl.books.magagement.model.internal.CreateAuthor;
 
+import java.util.List;
+
 @Mapper(
     componentModel = "spring",
     injectionStrategy = InjectionStrategy.CONSTRUCTOR,
@@ -19,4 +21,6 @@ public interface AuthorMapper {
     CreateAuthor createAuthorRequestToCreateAuthor(CreateAuthorRequest request);
 
     AuthorHeader authorEntityToAuthorHeader(AuthorEntity authorEntity);
+
+    List<AuthorHeader> authorsEntitiesToAuthorsHeaders(List<AuthorEntity> authorEntities);
 }
