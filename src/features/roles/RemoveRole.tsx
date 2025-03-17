@@ -37,7 +37,7 @@ const RemoveRole = (props: {
     return (
         <RemoveButton
             title="Usuń rolę"
-            dialogTitle={`Czy usunąć rolę: ${role.name}?`} 
+            dialogTitle={`Czy usunąć rolę ${role.name}?`} 
             onClick={handleRemove}  
         />
     )

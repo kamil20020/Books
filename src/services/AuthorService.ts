@@ -10,7 +10,7 @@ class AuthorService{
 
         return axios.get(this.api, {
             params: {
-                pageable
+                ...pageable
             }
         })
     }
@@ -19,7 +19,7 @@ class AuthorService{
 
         return axios.get(`${this.api}/${authorId}/books`, {
             params: {
-                pageable
+                ...pageable
             }
         })
     }

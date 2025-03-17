@@ -34,14 +34,14 @@ const Navigation = () => {
 
         newMenuItems.push(
             {
-                title: <NavigationItem key={3} link="/publishers" title="Wydawnictwa"/>
-            },
-            {
                 title: <NavigationItem key={4} link="/authors" title="Autorzy"/>
             },
             {
                 title: <NavigationItem key={5} link="/books" title="Książki"/>
-            }
+            },
+            {
+                title: <NavigationItem key={3} link="/publishers" title="Wydawnictwa"/>
+            },
         )
     
         return newMenuItems
