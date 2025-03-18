@@ -35,17 +35,21 @@ const Authors = () => {
             <div className="authors">
                 <AddAuthor/>
                 <table>
-                    <tr className="authors-header">
-                        <th>Id</th>
-                        <th>Imię</th>
-                        <th>Nazwisko</th>
-                        <th>Główny wydawca</th>
-                        <th>Liczba książek</th>
-                        <th>Akcja</th>
-                    </tr>
-                    {authors.map((author) => (
-                        <AuthorRow key={author.id} author={author}/>
-                    ))}
+                    <thead>
+                        <tr className="authors-header">
+                            <th>Id</th>
+                            <th>Imię</th>
+                            <th>Nazwisko</th>
+                            <th>Główny wydawca</th>
+                            <th>Liczba książek</th>
+                            <th>Akcja</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {authors.map((author) => (
+                            <AuthorRow key={author.id} author={author}/>
+                        ))}
+                    </tbody>
                 </table>
             </div>
         </>

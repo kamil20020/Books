@@ -48,7 +48,7 @@ const AuthorBooks = (props: {
                 content={
                     <div className="author-books">
                         {books.map((book) => (
-                            <div>
+                            <div key={book.id}>
                                 {book.id}
                                 {book.title}
                             </div>
