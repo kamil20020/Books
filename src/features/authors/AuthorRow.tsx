@@ -5,7 +5,8 @@ import AuthorBooks from "./AuthorBooks";
 import RemoveAuthor from "./RemoveAuthor";
 
 const AuthorRow = (props: {
-    author: Author
+    author: Author,
+    onDeleteAuthor: (deletedAuthorId: string) => void
 }) => {
 
     const author = props.author
@@ -15,12 +16,15 @@ const AuthorRow = (props: {
             <td>{author.id}</td>
             <td>{author.firstname}</td>
             <td>{author.surname}</td>
-            <td>{author.mainPublisherId ? author.mainPublisherId : "Brak"}</td>
+            <td>{author.mainPublisher ? author.mainPublisher.name : "Brak"}</td>
             <td>
                <AuthorBooks author={author}/>
             </td>
             <td className="author-actions">
-                <RemoveAuthor author={author}/>
+                <RemoveAuthor
+                    author={author}
+                    onDeleteAuthor={props.onDeleteAuthor}
+                />
             </td>
         </tr>
     )

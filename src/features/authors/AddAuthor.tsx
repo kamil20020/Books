@@ -2,8 +2,12 @@
 import AddButton from "../../components/AddButton";
 import FormService from "../../services/FormService";
 import ValidatedInput from "../../components/ValidatedInput";
-import Select from "../../components/Dropdown";
+import Select from "../../components/PaginationAPIDropdown";
 import SelectPublisher from "./SelectPublisher";
+import Author from "../../models/api/response/author";
+import AuthorService from "../../services/AuthorService";
+import CreateAuthor from "../../models/api/request/createAuthor";
+import { NotificationStatus, useNotificationContext } from "../../context/NotificationContext";
 
 interface FormProps{
     firstname: string,
@@ -11,7 +15,9 @@ interface FormProps{
     mainPublisherId?: string
 }
 
-const AddAuthor = () => {
+const AddAuthor = (props: {
+    handleAdd: (newAuthor: Author) => void;
+}) => {
 
     const initialForm: FormProps = {
         firstname: "",
@@ -26,6 +32,8 @@ const AddAuthor = () => {
     const [form, setForm] = useState<FormProps>({...initialForm})
     const [errors, setErrors] = useState<FormProps>({...errorInitialForm})
 
+    const setNotifcation = useNotificationContext().setNotification
+
     const handleAddAuthor = () => {
 
         if(!validateForm()){
@@ -33,6 +41,32 @@ const AddAuthor = () => {
         }
 
         console.log("Add author")
+
+        const request: CreateAuthor = {
+            ...form
+        }
+
+        AuthorService.create(request)
+        .then((response) => {
+
+            const gotAuthor: Author = response.data
+
+            props.handleAdd(gotAuthor)
+
+            setNotifcation({
+                message: "Utworzono autora",
+                status: NotificationStatus.SUCCESS
+            })
+        })
+        .catch((error) => {
+
+            console.log(error)
+
+            setNotifcation({
+                message: error.response.data,
+                status: NotificationStatus.ERROR
+            })
+        })
     }
 
     const validateForm = (): boolean => {

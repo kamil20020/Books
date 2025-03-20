@@ -1,4 +1,5 @@
 ﻿import Author from "./author";
+import Publisher from "./publisher";
 
 export default interface Book{
     id: string;
@@ -6,6 +7,6 @@ export default interface Book{
     price: number,
     picture?: string
     publicationDate: string,
-    publisher: any,
+    publisher: Publisher,
     authors: Author[]
 }

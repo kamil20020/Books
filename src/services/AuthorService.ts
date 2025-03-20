@@ -31,7 +31,7 @@ class AuthorService{
 
     deleteById(authorId: string){
 
-        return axios.get(`${this.api}/${authorId}`)
+        return axios.delete(`${this.api}/${authorId}`)
     }
 }
 

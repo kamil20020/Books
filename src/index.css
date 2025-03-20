@@ -50,6 +50,7 @@ h1{
 
 span{
   display: block;
+  z-index: 0;
 }
 
 button{
@@ -82,12 +83,17 @@ select:focus{
 .material-symbols-outlined{
   border-radius: 50%;
   padding: 4px;
+  z-index: 0;
 }
 
 .material-symbols-outlined:hover{
   cursor: pointer;
   background-color: silver;
   opacity: 0.6;
+}
+
+.disabled-icon{
+  opacity: 0.5;
 }
 
 hr{

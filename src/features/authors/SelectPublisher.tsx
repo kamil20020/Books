@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from "react";
-import Dropdown, { Option } from "../../components/Dropdown";
+import PaginationAPIDropdown from "../../components/PaginationAPIDropdown";
 import Pageable from "../../models/api/request/pageable";
 import PublisherService from "../../services/PublisherService";
 import { AxiosResponse } from "axios";
@@ -28,7 +28,7 @@ const SelectPublisher = (props: {
     }
 
     return (
-        <Dropdown
+        <PaginationAPIDropdown
             title="Główny wydawca"
             getOptions={handleGetPublishers}
             mapRowToOption={convertPublisherToOption}

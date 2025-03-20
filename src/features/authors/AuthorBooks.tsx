@@ -7,6 +7,7 @@ import AuthService from "../../services/AuthService";
 import AuthorService from "../../services/AuthorService";
 import Pageable from "../../models/api/request/pageable";
 import Page from "../../models/api/response/page";
+import AuthorBook from "./AuthorBook";
 
 const AuthorBooks = (props: {
     author: Author
@@ -37,21 +38,20 @@ const AuthorBooks = (props: {
     return (
         <div className="author-books-info">
             <p>{author.publishedBooksCount}</p>
-            <Icon 
-                iconName="menu_book" 
-                size={28} 
-                onClick={() => setShowBooks(true)}
-            />
+            {author.publishedBooksCount > 0 &&
+                 <Icon 
+                    iconName="menu_book" 
+                    size={28} 
+                    onClick={() => setShowBooks(true)}
+                />
+            }
             <Dialog
                 title={`Książki autorstwa ${author.firstname} ${author.surname}`} 
-                isOpened={showBooks} 
+                isOpened={showBooks}
                 content={
                     <div className="author-books">
-                        {books.map((book) => (
-                            <div key={book.id}>
-                                {book.id}
-                                {book.title}
-                            </div>
+                        {books.map((book: Book) => (
+                            <AuthorBook key={book.id} book={book}/>
                         ))}
                     </div>
                 }
