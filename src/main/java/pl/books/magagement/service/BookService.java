@@ -82,9 +82,10 @@ public class BookService {
 
         foundBook.getAuthors().forEach(author -> {
 
-            int newPublishedBooksCount = author.getPublishedBooksCount() + 1;
+            int newPublishedBooksCount = author.getPublishedBooksCount() - 1;
 
             author.setPublishedBooksCount((short) newPublishedBooksCount);
+            author.getBooks().remove(foundBook);
         });
 
         bookRepository.deleteById(bookId);
