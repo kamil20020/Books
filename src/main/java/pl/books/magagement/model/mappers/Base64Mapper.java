@@ -12,6 +12,10 @@ public interface Base64Mapper {
     @Named(value = "byteArrayToBase64")
     default String byteArrayToBase64(byte[] rawData){
 
+        if(rawData == null){
+            return null;
+        }
+
         Base64.Encoder encoder = Base64.getEncoder();
 
         return encoder.encodeToString(rawData);
@@ -19,6 +23,10 @@ public interface Base64Mapper {
 
     @Named(value = "base64ToByteArray")
     default byte[] base64ToByteArray(String encodedData){
+
+        if(encodedData == null){
+            return null;
+        }
 
         Base64.Decoder decoder = Base64.getDecoder();
 

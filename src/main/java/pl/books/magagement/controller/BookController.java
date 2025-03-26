@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.books.magagement.model.api.request.CreateBookRequest;
+import pl.books.magagement.model.api.response.BookResponse;
 import pl.books.magagement.model.entity.BookEntity;
 import pl.books.magagement.model.internal.CreateBook;
 import pl.books.magagement.model.mappers.BookMapper;
@@ -26,21 +27,23 @@ public class BookController {
     private final BookMapper bookMapper;
 
     @GetMapping
-    public ResponseEntity<Page<BookEntity>> getBooksPage(@ParameterObject Pageable pageable){
+    public ResponseEntity<Page<BookResponse>> getBooksPage(@ParameterObject Pageable pageable){
 
         Page<BookEntity> gotBooksPage = bookService.getBooksPage(pageable);
+        Page<BookResponse> gotBooksResponsesPage = gotBooksPage.map(book -> bookMapper.bookEntityToBookResponse(book));
 
-        return ResponseEntity.ok(gotBooksPage);
+        return ResponseEntity.ok(gotBooksResponsesPage);
     }
 
     @PostMapping
-    public ResponseEntity<BookEntity> create(@RequestBody @Valid CreateBookRequest createBookRequest){
+    public ResponseEntity<BookResponse> create(@RequestBody @Valid CreateBookRequest createBookRequest){
 
         CreateBook createBook = bookMapper.createBookRequestToCreateBook(createBookRequest);
 
         BookEntity createdBook = bookService.create(createBook);
+        BookResponse createdBookResponse = bookMapper.bookEntityToBookResponse(createdBook);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBookResponse);
     }
 
     @DeleteMapping(value = "/{bookId}")

@@ -57,6 +57,7 @@ public class BookService {
             .price(createBook.price())
             .publisher(publisher)
             .authors(authors)
+            .picture(createBook.picture())
             .build();
 
         toCreateBook = bookRepository.save(toCreateBook);

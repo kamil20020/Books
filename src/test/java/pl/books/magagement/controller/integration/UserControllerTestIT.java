@@ -283,8 +283,8 @@ class UserControllerTestIT {
             .auth()
                 .preemptive()
                 .basic(
-                        "adam_nowak",
-                        "nowak"
+                    "adam_nowak",
+                    "nowak"
                 )
         .when()
             .delete("/{userId}/roles/{roleId}")

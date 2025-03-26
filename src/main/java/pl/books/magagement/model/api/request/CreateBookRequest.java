@@ -23,7 +23,7 @@ public record CreateBookRequest(
     String picture,
 
     @UUID(message = "Invalid publisher id")
-    @NotEmpty(message = "Publisher id is required")
+    @NotBlank(message = "Publisher id is required")
     String publisherId,
 
     @NotEmpty(message = "Authors ids are required")
