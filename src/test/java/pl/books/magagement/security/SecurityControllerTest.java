@@ -3,6 +3,7 @@ package pl.books.magagement.security;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,9 +16,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import pl.books.magagement.config.CustomAccessDeniedHandler;
+import pl.books.magagement.config.JwtService;
 import pl.books.magagement.config.SecurityConfig;
 import pl.books.magagement.controller.SecurityController;
+import pl.books.magagement.model.entity.RoleEntity;
+import pl.books.magagement.model.entity.UserEntity;
 import pl.books.magagement.service.UserService;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -35,6 +42,12 @@ class SecurityControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Test
     void testPublic() throws Exception {
@@ -58,12 +71,11 @@ class SecurityControllerTest {
     void onlyLoggedUserShouldAccess() throws Exception {
 
         //given
-        String basicAuthHeaderContent = "Basic a2FtaWw6bm93YWs="; //base64 of kamil.nowak
 
         //when
+
         MvcResult mvcResult = mockMvc.perform(
             get(API_URL_PREFIX + "/requires-login")
-            .header(HttpHeaders.AUTHORIZATION, basicAuthHeaderContent)
         )
             .andDo(print())
             .andExpect(status().isOk())
@@ -95,12 +107,11 @@ class SecurityControllerTest {
     void onlyAdminShouldAccess() throws Exception {
 
         //given
-        String basicAuthHeaderContent = "Basic a2FtaWw6bm93YWs="; //base64 of kamil.nowak
 
         //when
+
         MvcResult mvcResult = mockMvc.perform(
             get(API_URL_PREFIX + "/requires-admin")
-            .header(HttpHeaders.AUTHORIZATION, basicAuthHeaderContent)
         )
             .andDo(print())
             .andExpect(status().isOk())
@@ -113,16 +124,14 @@ class SecurityControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "kamil", password = "nowak")
+    @WithMockUser(username = "kamil", password = "nowak", roles = {})
     void regularUserShouldNotAccess() throws Exception {
 
         //given
-        String basicAuthHeaderContent = "Basic a2FtaWw6bm93YWs="; //base64 of kamil.nowak
 
         //when
         MvcResult mvcResult = mockMvc.perform(
             get(API_URL_PREFIX + "/requires-admin")
-            .header(HttpHeaders.AUTHORIZATION, basicAuthHeaderContent)
         )
             .andDo(print())
             .andExpect(status().isForbidden())

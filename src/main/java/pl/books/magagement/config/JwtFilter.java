@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -27,7 +28,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -53,14 +54,14 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void handleAuthentication(String authHeader) throws IllegalArgumentException{
+    private void handleAuthentication(String authHeader) throws IllegalArgumentException, UsernameNotFoundException {
 
         String accessToken = authHeader.substring(6);
 
         jwtService.verifyToken(accessToken);
 
         String username = jwtService.getUsername(accessToken);
-        UserDetails foundUser = userDetailsService.loadUserByUsername(username);
+        UserDetails foundUser = userService.loadUserByUsername(username);
 
         UsernamePasswordAuthenticationToken userPassAuthToken = new UsernamePasswordAuthenticationToken(
             foundUser, null, foundUser.getAuthorities()

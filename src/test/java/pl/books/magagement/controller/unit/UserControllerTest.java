@@ -8,21 +8,27 @@ import org.apiguardian.api.API;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import pl.books.magagement.config.JwtFilter;
-import pl.books.magagement.config.SecurityConfig;
+import pl.books.magagement.config.*;
 import pl.books.magagement.controller.AuthorController;
 import pl.books.magagement.controller.UserController;
 import pl.books.magagement.model.api.request.LoginRequest;
@@ -43,8 +49,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = UserController.class)
-@Import(SecurityConfig.class)
+@WebMvcTest(value = UserController.class)
+@Import(value = {SecurityConfig.class})
 class UserControllerTest {
 
     private static final String API_URL_PREFIX = "/users";
@@ -63,6 +69,9 @@ class UserControllerTest {
 
     @MockBean
     private UserMapper userMapper;
+
+    @MockBean
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     private final ObjectMapper objectMapper;
 
@@ -170,18 +179,18 @@ class UserControllerTest {
         String encodedRequest = objectMapper.writeValueAsString(request);
 
         //when
-        Mockito.when(userService.login(anyString(), anyString())).thenThrow(IllegalArgumentException.class);
+        Mockito.when(userService.login(any(), any())).thenThrow(IllegalArgumentException.class);
 
         mockMvc.perform(
             post(API_URL_PREFIX + "/login")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(encodedRequest)
         )
-        .andDo(print());
-//        .andExpect(status().isBadRequest());
+        .andDo(print())
+        .andExpect(status().isBadRequest());
 
         //then
-        Mockito.verify(userService).login(anyString(), anyString());
+        Mockito.verify(userService).login(request.username(), request.password());
     }
 
     @Test

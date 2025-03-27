@@ -35,6 +35,9 @@ class UserServiceTest {
     @Mock
     private JwtService jwtService;
 
+    @Mock
+    private RevokedRefreshTokenService revokedRefreshTokenService;
+
     @InjectMocks
     private UserService userService;
 
@@ -101,6 +104,7 @@ class UserServiceTest {
         Mockito.when(userRepository.findByUsernameIgnoreCase(anyString())).thenReturn(userOpt);
         Mockito.when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         Mockito.when(jwtService.generateAccessToken(any())).thenReturn(accessToken);
+        Mockito.when(jwtService.generateRefreshToken(any())).thenReturn(refreshToken);
 
         LoginResponse gotResponse = userService.login("kamil", "nowak");
 
@@ -111,6 +115,7 @@ class UserServiceTest {
         Mockito.verify(userRepository).findByUsernameIgnoreCase(user.getUsername());
         Mockito.verify(passwordEncoder).matches("nowak", "encoded-nowak");
         Mockito.verify(jwtService).generateAccessToken(user);
+        Mockito.verify(jwtService).generateRefreshToken(user);
     }
 
     @Test

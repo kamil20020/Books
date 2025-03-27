@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.User;
@@ -90,15 +91,7 @@ class UserControllerTestIT {
 
     public UserEntity createAdmin(String username, String password){
 
-        String encodedPassword = passwordEncoder.encode(password);
-
-        UserEntity newUser = UserEntity.builder()
-            .username(username)
-            .password(encodedPassword)
-            .roles(new HashSet<>())
-            .build();
-
-        UserEntity user = userRepository.save(newUser);
+        UserEntity user = userService.register(username, password);
 
         RoleEntity adminRole = new RoleEntity("ADMIN");
 
@@ -107,6 +100,11 @@ class UserControllerTestIT {
         roleService.grantRole(user.getId(), adminRole.getId());
 
         return user;
+    }
+
+    public String loginAndGetAccessToken(String username, String password){
+
+        return userService.login(username, password).accessToken();
     }
 
     @Test
@@ -173,6 +171,7 @@ class UserControllerTestIT {
 
         //given
         UserEntity admin = createAdmin("kamil", "nowak");
+        String accessToken = loginAndGetAccessToken("kamil", "nowak");
 
         RoleEntity writerRole = new RoleEntity("WRITER");
 
@@ -183,12 +182,18 @@ class UserControllerTestIT {
         //when
         Set<RoleEntity> gotRoles = RestAssured
         .given()
-            .auth()
-                .preemptive()
-                .basic(
-                    "kamil",
-                    "nowak"
+//            .auth()
+//                .preemptive()
+//                .basic(
+//                    "kamil",
+//                    "nowak"
+//                )
+            .header(
+                new Header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer " + accessToken
                 )
+            )
         .when()
             .get("/{userId}/roles", admin.getId())
         .then()
@@ -242,18 +247,19 @@ class UserControllerTestIT {
         role = roleRepository.save(role);
 
         UserEntity user = createAdmin("adam_nowak", "nowak");
+        String accessToken = loginAndGetAccessToken("adam_nowak", "nowak");
 
         //when
         RestAssured
         .given()
             .pathParam("userId", user.getId())
             .pathParam("roleId", role.getId())
-            .auth()
-                .preemptive()
-                .basic(
-                        "adam_nowak",
-                        "nowak"
+            .header(
+                new Header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer " + accessToken
                 )
+            )
         .when()
             .post("/{userId}/roles/{roleId}")
         .then()
@@ -273,6 +279,8 @@ class UserControllerTestIT {
         UserEntity user = createAdmin("adam_nowak", "nowak");
         userRepository.flush();
 
+        String accessToken = loginAndGetAccessToken("adam_nowak", "nowak");
+
         RoleEntity adminRole = roleRepository.findAll().get(0);
 
         //when
@@ -280,12 +288,12 @@ class UserControllerTestIT {
         .given()
             .pathParam("userId", user.getId())
             .pathParam("roleId", adminRole.getId())
-            .auth()
-                .preemptive()
-                .basic(
-                    "adam_nowak",
-                    "nowak"
+            .header(
+                new Header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer " + accessToken
                 )
+            )
         .when()
             .delete("/{userId}/roles/{roleId}")
         .then()
@@ -302,6 +310,7 @@ class UserControllerTestIT {
 
         //given
         UserEntity user = createAdmin("adam_nowak", "nowak"); //$2a$10$y/VWKoTjVR9jTiCtjQB8XuWpj2TAdH3.IXXxaE0LZKF9cC1WY8erO"
+        String accessToken = loginAndGetAccessToken("adam_nowak", "nowak");
 
         PatchUserRequest request = new PatchUserRequest("adam.nowak");
 
@@ -310,11 +319,11 @@ class UserControllerTestIT {
         .given()
             .contentType(ContentType.JSON)
             .body(request)
-            .auth()
-                .preemptive()
-                .basic(
-                    "adam_nowak",
-                    "nowak"
+                .header(
+                    new Header(
+                        HttpHeaders.AUTHORIZATION,
+                        "Bearer " + accessToken
+                    )
                 )
         .when()
             .patch("/{userId}", user.getId())
@@ -335,17 +344,18 @@ class UserControllerTestIT {
 
         //given
         UserEntity user = createAdmin("adam_nowak", "nowak"); //$2a$10$y/VWKoTjVR9jTiCtjQB8XuWpj2TAdH3.IXXxaE0LZKF9cC1WY8erO
+        String accessToken = loginAndGetAccessToken("adam_nowak", "nowak");
 
         //when
         RestAssured
         .given()
             .pathParam("userId", user.getId())
-            .auth()
-                .preemptive()
-                .basic(
-                    "adam_nowak",
-                    "nowak"
+            .header(
+                new Header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer " + accessToken
                 )
+            )
         .when()
             .delete("/{userId}")
         .then()

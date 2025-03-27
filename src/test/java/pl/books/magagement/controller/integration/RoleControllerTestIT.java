@@ -65,30 +65,24 @@ class RoleControllerTestIT {
         userRepository.deleteAll();
     }
 
-    public void createAdmin(String username, String password){
+    public String createAdminAndGetAccessToken(String username, String password){
 
-        String encodedPassword = passwordEncoder.encode(password);
-
-        UserEntity newUser = UserEntity.builder()
-                .username(username)
-                .password(encodedPassword)
-                .roles(new HashSet<>())
-                .build();
-
-        UserEntity user = userRepository.save(newUser);
+        UserEntity user = userService.register(username, password);
 
         RoleEntity adminRole = new RoleEntity("ADMIN");
 
         adminRole = roleRepository.save(adminRole);
 
         roleService.grantRole(user.getId(), adminRole.getId());
+
+        return userService.login(username, password).accessToken();
     }
 
     @Test
     void shouldCreateRole() {
 
         //given
-        createAdmin("adam_nowak", "nowak");
+        String accessToken = createAdminAndGetAccessToken("adam_nowak", "nowak");
 
         CreateRoleRequest createRoleRequest = new CreateRoleRequest("WRITER");
 
@@ -97,12 +91,18 @@ class RoleControllerTestIT {
         .given()
             .contentType(ContentType.JSON)
             .body(createRoleRequest)
-            .auth()
-                .preemptive()
-                .basic(
-                    "adam_nowak",
-                    "nowak"
+            .header(
+                new Header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer " + accessToken
                 )
+            )
+//            .auth()
+//                .preemptive()
+//                .basic(
+//                    "adam_nowak",
+//                    "nowak"
+//                )
         .when()
             .post()
         .then()
@@ -117,7 +117,7 @@ class RoleControllerTestIT {
     void shouldNotCreateDuplicateRole() {
 
         //given
-        createAdmin("adam_nowak", "nowak");
+        String accessToken = createAdminAndGetAccessToken("adam_nowak", "nowak");
 
         CreateRoleRequest createRoleRequest = new CreateRoleRequest("ADMIN");
 
@@ -126,12 +126,12 @@ class RoleControllerTestIT {
         .given()
             .contentType(ContentType.JSON)
             .body(createRoleRequest)
-            .auth()
-                .preemptive()
-                .basic(
-                    "adam_nowak",
-                    "nowak"
+            .header(
+                new Header(
+                    HttpHeaders.AUTHORIZATION,
+                    "Bearer " + accessToken
                 )
+            )
         .when()
             .post()
         .then()
@@ -145,11 +145,9 @@ class RoleControllerTestIT {
     public void shouldDeleteById(){
 
         //given
-        createAdmin("adam", "nowak");
+        String accessToken = createAdminAndGetAccessToken("adam", "nowak");
 
         RoleEntity role = roleRepository.findAll().get(0);
-
-        String accessToken = userService.login("adam", "nowak").accessToken();
 
         //when
         RestAssured

@@ -20,6 +20,7 @@ import pl.books.magagement.model.internal.CreateAuthor;
 import pl.books.magagement.repository.AuthorRepository;
 import pl.books.magagement.repository.BookRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -216,6 +217,7 @@ class AuthorServiceTest {
 
         AuthorEntity author = AuthorEntity.builder()
             .id(authorId)
+            .books(new HashSet<>())
             .build();
 
         //when

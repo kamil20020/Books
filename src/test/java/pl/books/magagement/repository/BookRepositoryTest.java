@@ -206,11 +206,12 @@ class BookRepositoryTest {
             .books(new HashSet<>())
             .build();
 
-        authorRepository.save(author);
+        author = authorRepository.save(author);
+        author1 = authorRepository.save(author1);
 
         PublisherEntity publisher = new PublisherEntity("Publisher 123");
 
-        publisherRepository.save(publisher);
+        publisher = publisherRepository.save(publisher);
 
         byte[] picture = "picture".getBytes(StandardCharsets.UTF_8);
 
