@@ -9,7 +9,7 @@
 
     const handleClick = () => {
 
-        if(!props.isDisabled){
+        if(!props.isDisabled && props.onClick){
             props.onClick!()
         }
     }

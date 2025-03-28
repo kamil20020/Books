@@ -1,7 +1,46 @@
-﻿const Books = () => {
+﻿import { useEffect, useRef, useState } from "react";
+import ContentHeader from "../components/ContentHeader";
+import Book from "../models/api/response/book";
+import BookService from "../services/BookService";
+import Pageable from "../models/api/request/pageable";
+import Page from "../models/api/response/page";
+import BookView from "../features/books/BookView";
+import "../features/books/books.css";
+
+const Books = () => {
+
+    const [books, setBooks] = useState<Book[]>([])
+
+    const page = useRef<number>(0);
+    const totalElements = useRef<number>(0);
+    const pageSize = 2;
+
+    useEffect(() => {
+
+        const pagination: Pageable = {
+            page: page.current,
+            size: pageSize
+        }
+
+        BookService.getPage(pagination)
+        .then((response) => {
+
+            const pagedResponse: Page<Book> = response.data
+
+            setBooks(pagedResponse.content)
+            totalElements.current = pagedResponse.totalElements
+        })
+    }, [])
 
     return (
-        <h2>Books</h2>
+        <>
+            <ContentHeader title="Książki"/>
+            <div className="books">
+                {books.map((book) => (
+                    <BookView key={book.id} book={book}/>
+                ))}                
+            </div>
+        </>
     )
 }
 
