@@ -6,6 +6,8 @@ import Pageable from "../models/api/request/pageable";
 import Page from "../models/api/response/page";
 import BookView from "../features/books/BookView";
 import "../features/books/books.css";
+import AddButton from "../components/AddButton";
+import AddBook from "../features/books/AddBook";
 
 const Books = () => {
 
@@ -36,6 +38,7 @@ const Books = () => {
         <>
             <ContentHeader title="Książki"/>
             <div className="books">
+                <AddBook/>
                 {books.map((book) => (
                     <BookView key={book.id} book={book}/>
                 ))}                
