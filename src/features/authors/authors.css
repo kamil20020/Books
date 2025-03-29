@@ -75,6 +75,11 @@
     grid-template-columns: 1fr 2fr;
 }
 
+.author-book-img{
+    display: flex;
+    justify-content: center;
+}
+
 .author-book-details{
     display: flex;
     flex-direction: column;

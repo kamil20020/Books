@@ -10,7 +10,9 @@ const AuthorBook = (props: {
 
     return (
         <div className="author-book">
-            <Img data={book.picture}/>
+            <div className="author-book-img">
+                <Img data={book.picture} maxWidth={120}/>
+            </div>
             <div className="author-book-details">
                 <p>Tytuł: {book.title}</p>
                 <p>Data publikacji: {book.publicationDate}</p>

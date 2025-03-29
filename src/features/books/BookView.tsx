@@ -11,7 +11,7 @@ const BookView = (props: {
     return (
 
         <div className="book">
-            <Img data={book.picture}/>
+            <Img data={book.picture} width={200}/>
             <p>Id: {book.id}</p>
             <p>Tytuł: {book.title}</p>
             <BookAuthorsHeader authors={book.authors}/>
