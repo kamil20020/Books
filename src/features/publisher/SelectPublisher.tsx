@@ -5,6 +5,9 @@ import PublisherService from "../../services/PublisherService";
 import { AxiosResponse } from "axios";
 
 const SelectPublisher = (props: {
+    isRequired?: boolean;
+    value?: string[];
+    errorMessage?: string;
     selectPublisherId: (newPublisherId: string) => void;
 }) => {
 
@@ -29,7 +32,11 @@ const SelectPublisher = (props: {
 
     return (
         <PaginationAPIDropdown
-            title="Główny wydawca"
+            key="publisher"
+            title="Wydawca"
+            value={props.value}
+            isRequired={props.isRequired}
+            errorMessage={props.errorMessage}
             getOptions={handleGetPublishers}
             mapRowToOption={convertPublisherToOption}
             onSelect={handleSelectPublisher}

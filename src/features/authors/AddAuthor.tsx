@@ -3,7 +3,7 @@ import AddButton from "../../components/AddButton";
 import FormService from "../../services/FormService";
 import ValidatedInput from "../../components/ValidatedInput";
 import Select from "../../components/PaginationAPIDropdown";
-import SelectPublisher from "./SelectPublisher";
+import SelectPublisher from "../publisher/SelectPublisher";
 import Author from "../../models/api/response/author";
 import AuthorService from "../../services/AuthorService";
 import CreateAuthor from "../../models/api/request/createAuthor";
@@ -117,6 +117,7 @@ const AddAuthor = (props: {
                         }}
                     />
                     <SelectPublisher
+                        isRequired={false}
                         selectPublisherId={(newPublisherId) => {
                             setForm({...form, mainPublisherId: newPublisherId})
                         }}

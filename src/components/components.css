@@ -31,8 +31,9 @@
 .dialog {
     border: 1px solid silver;
     width: 25%;
-    min-height: fit-content;
     opacity: 1;
+    overflow-y: auto;
+    max-height: 92%;
     border-radius: 16px;
     padding: 16px 38px 38px 38px;
     justify-content: center;
@@ -109,6 +110,10 @@
 
 .dropdown > option{
     padding: 6px 4px;
+}
+
+.pagination-dropdown{
+    overflow-y: auto;
 }
 
 @media (max-width: 1200px) {

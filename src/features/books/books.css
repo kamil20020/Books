@@ -46,11 +46,22 @@
     grid-template-columns: 1fr 2fr;
 }
 
+.add-book{
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+    width: 60%;
+}
+
 @media (max-width: 768px) {
 
     .book-detailed-data-row{
         width: 100%;
     }
+
+    .add-book{
+        width: 90%;
+    }    
 
     .books{
         width: 90%;
@@ -66,6 +77,10 @@
 }
 
 @media (max-width: 1280px){
+
+    .add-book{
+        width: 80%;
+    }    
 
     .books{
         width: 90%;

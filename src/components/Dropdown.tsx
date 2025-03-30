@@ -23,7 +23,6 @@ const Dropdown = (props: {
             className="dropdown" 
             style={{
                 padding: "6px 14px",
-                overflowX: "auto",
                 ...props.style
             }}
             defaultValue={props.defaultValue}
