@@ -51,6 +51,7 @@
     flex-direction: column;
     row-gap: 12px;
     width: 60%;
+    margin-bottom: 12px;
 }
 
 @media (max-width: 768px) {

@@ -70,12 +70,14 @@ const EditUser = (props: {
         })
         .catch((error) => {
 
+            const errorMessage = error.response.data
+
             if(error.status == 409){
-                setErrors({...errors, username: error.response.data})
+                setErrors({...errors, username: errorMessage})
             }
 
             setNotification({
-                message: error.response.data,
+                message: errorMessage,
                 status: NotificationStatus.ERROR
             })
         })

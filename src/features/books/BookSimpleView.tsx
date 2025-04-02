@@ -7,7 +7,7 @@ const BookSimpleView = (props: {
 }) => {
 
     const book = props.book
-
+    
     return (
         <div className="book-simple">
             <Img data={book.picture} width={200}/>

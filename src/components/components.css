@@ -116,6 +116,16 @@
     overflow-y: auto;
 }
 
+.select-image{
+    display: flex;
+    justify-content: center;
+}
+
+.select-image:hover{
+    cursor: pointer;
+    opacity: 0.8;
+}
+
 @media (max-width: 1200px) {
   
     .dialog{

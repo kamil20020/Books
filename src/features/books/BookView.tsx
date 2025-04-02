@@ -7,14 +7,18 @@ import BookSimpleView from "./BookSimpleView";
 import BookDetailedView from "./BookDetailedView";
 import RemoveButton from "../../components/RemoveButton";
 import RemoveBook from "./RemoveBook";
+import { useAuthContext } from "../../context/AuthContext";
 
 const BookView = (props: {
-    book: Book
+    book: Book,
+    handleRemoveBook: (removedBookId: string) => void;
 }) => {
 
     const book = props.book
 
     const [showDetails, setShowDetails] = useState<boolean>(false)
+
+    const isUserAdmin = useAuthContext().isUserAdmin()
 
     return (
 
@@ -25,7 +29,12 @@ const BookView = (props: {
                 onClick={() => setShowDetails(!showDetails)}
             />
             {showDetails && <BookDetailedView book={book}/>}
-            <RemoveBook book={book}/>
+            {isUserAdmin &&
+                <RemoveBook
+                    book={book}
+                    handleRemoveBook={props.handleRemoveBook}
+                />
+            }
         </div>
     )
 }

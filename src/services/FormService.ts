@@ -6,7 +6,7 @@
 
     validateRequired(value?: string){
 
-        return value && value.trim().length > 0
+        return value != undefined && value.trim().length > 0
     }
 
     validateRequiredObj(value?: any){

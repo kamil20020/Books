@@ -1,4 +1,6 @@
-﻿const Img = (props: {
+﻿import ImgService from "../services/ImgService"
+
+const Img = (props: {
     data?: string,
     width?: number,
     height?: number,
@@ -12,24 +14,26 @@
     const maxWidth = props.maxWidth ? props.maxWidth : 500
     const maxHeight = props.maxHeight ? props.maxHeight : 500
 
-    if(!props.data){
-        return (
-            <div 
-                style={{
-                    backgroundColor: "teal",
-                    width: width,
-                    height: height,
-                    maxHeight: maxHeight,
-                    maxWidth: maxWidth
-                }}
-            >
-            </div>
-        )
+    const img = props.data
+
+    const noImgData = "https://media.istockphoto.com/id/1409329028/pl/wektor/brak-dost%C4%99pnego-obrazu-symbol-zast%C4%99pczy-miniatura-ikona-ilustracja.jpg?s=612x612&w=0&k=20&c=HQSo27lfrPAMaC-eUONkArhNeSYutr1Br1gwQy3Fmn0="
+
+    const handleGetValidImg = () => {
+
+        if(!img){
+            return noImgData
+        }
+
+        if(ImgService.hasImgPrefix(img)){
+            return img
+        }
+
+        return ImgService.addPrefixToImg(img)
     }
 
     return (
         <img 
-            src={`data:image/png;base64,${props.data}`}
+            src={handleGetValidImg()}
             height={height}
             width={width}
             style={{

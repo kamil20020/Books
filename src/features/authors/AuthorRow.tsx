@@ -1,5 +1,6 @@
 ﻿import Icon from "../../components/Icon";
 import RemoveButton from "../../components/RemoveButton";
+import { useAuthContext } from "../../context/AuthContext";
 import Author from "../../models/api/response/author";
 import AuthorBooks from "./AuthorBooks";
 import RemoveAuthor from "./RemoveAuthor";
@@ -10,6 +11,7 @@ const AuthorRow = (props: {
 }) => {
 
     const author = props.author
+    const isUserAdmin = useAuthContext().isUserAdmin()
 
     return (
         <tr className="author-row">
@@ -21,10 +23,12 @@ const AuthorRow = (props: {
                <AuthorBooks author={author}/>
             </td>
             <td className="author-actions">
-                <RemoveAuthor
-                    author={author}
-                    onDeleteAuthor={props.onDeleteAuthor}
-                />
+                {isUserAdmin &&
+                    <RemoveAuthor
+                        author={author}
+                        onDeleteAuthor={props.onDeleteAuthor}
+                    />
+                }
             </td>
         </tr>
     )

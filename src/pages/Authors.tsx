@@ -12,6 +12,7 @@ import Dropdown from "../components/Dropdown";
 import PageSizeDropdown from "../components/PageSizeDropdown";
 import Icon from "../components/Icon";
 import { unstable_batchedUpdates } from "react-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 interface Pagination{
     page: number,
@@ -41,6 +42,8 @@ const Authors = () => {
         totalElements: 0,
         pageSize: 1
     })
+
+    const isUserLogged = useAuthContext().isUserLogged
 
     useEffect(() => {
 
@@ -98,7 +101,9 @@ const Authors = () => {
         <>
             <ContentHeader title="Autorzy"/>
             <div className="authors">
-                <AddAuthor handleAdd={handleAdd}/>
+                {isUserLogged &&
+                    <AddAuthor handleAdd={handleAdd}/>
+                }
                 <table>
                     <TableHeader/>
                     <tbody>

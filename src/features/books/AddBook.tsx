@@ -11,6 +11,8 @@ import SelectAuthor from "../authors/SelectAuthor";
 import FormService from "../../services/FormService";
 import BookService from "../../services/BookService";
 import { NotificationStatus, useNotificationContext } from "../../context/NotificationContext";
+import Book from "../../models/api/response/book";
+import SelectImage from "../../components/SelectImage";
 
 interface ErrorsProps{
     title: string;
@@ -20,7 +22,9 @@ interface ErrorsProps{
     authorsIds: string
 }
 
-const AddBook = () => {
+const AddBook = (props: {
+    handleAddBook: (newBook: Book) => void
+}) => {
 
     const initForm: CreateBook = {
         title: "",
@@ -58,7 +62,13 @@ const AddBook = () => {
         BookService.create(form)
         .then((response) => {
 
-            console.log(response.data)
+            const createdBook: Book = response.data
+
+            console.log(createdBook)
+
+            props.handleAddBook(createdBook)
+
+            setForm({...initForm})
 
             setNotification({
                 message: "Utworzono książkę",
@@ -154,7 +164,7 @@ const AddBook = () => {
                         errorMessage={errors.authorsIds}
                         handleMultiSelect={(newValues: string[]) => handleChangeForm("authorsIds", newValues)}
                     />
-                    Dodaj obraz
+                    <SelectImage onChange={(newValue: string) => handleChangeForm("picture", newValue)}/>
                 </div>
             }
             onClick={handleSaveBook}
