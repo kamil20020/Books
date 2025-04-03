@@ -12,5 +12,5 @@ import java.util.UUID;
 public interface RevokedRefreshTokenRepository extends JpaRepository<RevokedRefreshTokenEntity, UUID> {
 
     void deleteAllByUserId(UUID userId);
-    void deleteAllByExpirationDateAfter(LocalDateTime actualDate);
+    void deleteAllByExpirationDateBefore(LocalDateTime actualDate);
 }

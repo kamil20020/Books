@@ -2,6 +2,7 @@ package pl.books.magagement.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -15,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Repository
-public interface BookRepository extends CrudRepository<BookEntity, UUID>, PagingAndSortingRepository<BookEntity, UUID> {
+public interface BookRepository extends CrudRepository<BookEntity, UUID>, PagingAndSortingRepository<BookEntity, UUID>, JpaSpecificationExecutor<BookEntity> {
 
     boolean existsByTitleIgnoreCase(String title);
     Page<BookEntity> findAllByPublisherId(UUID publisherId, Pageable pageable);

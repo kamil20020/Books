@@ -58,6 +58,6 @@ public class RevokedRefreshTokenService {
 
         LocalDateTime actualDate = LocalDateTime.now();
 
-        revokedRefreshTokenRepository.deleteAllByExpirationDateAfter(actualDate);
+        revokedRefreshTokenRepository.deleteAllByExpirationDateBefore(actualDate);
     }
 }

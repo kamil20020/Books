@@ -6,17 +6,25 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import pl.books.magagement.model.api.request.BookSearchCriteriaRequest;
 import pl.books.magagement.model.entity.AuthorEntity;
 import pl.books.magagement.model.entity.BookEntity;
 import pl.books.magagement.model.entity.PublisherEntity;
+import pl.books.magagement.model.internal.BookSearchCriteria;
 import pl.books.magagement.model.internal.CreateBook;
 import pl.books.magagement.repository.AuthorRepository;
 import pl.books.magagement.repository.BookRepository;
+import pl.books.magagement.specification.BookSpecification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
+
+import static org.springframework.data.jpa.domain.Specification.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +42,25 @@ public class BookService {
         }
 
         return bookRepository.findAll(pageable);
+    }
+
+    public Page<BookEntity> search(BookSearchCriteria criteria, Pageable pageable){
+
+        if(pageable == null){
+            pageable = Pageable.unpaged();
+        }
+
+        return bookRepository.findAll(
+            where(
+                allOf(
+                    BookSpecification.matchTitle(criteria.title()),
+                    BookSpecification.matchAuthorName(criteria.authorName()),
+                    BookSpecification.matchLessPublicationDate(criteria.publicationDate()),
+                    BookSpecification.matchLessPrice(criteria.price())
+                )
+            ),
+            pageable
+        );
     }
 
     @Transactional

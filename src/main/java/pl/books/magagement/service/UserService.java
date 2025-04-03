@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService {
 
         return userRepository.findAll(
             where(
-                anyOf(specifications)
+                allOf(specifications)
             ),
             pageable
         );

@@ -8,9 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.books.magagement.model.api.request.BookSearchCriteriaRequest;
 import pl.books.magagement.model.api.request.CreateBookRequest;
 import pl.books.magagement.model.api.response.BookResponse;
 import pl.books.magagement.model.entity.BookEntity;
+import pl.books.magagement.model.internal.BookSearchCriteria;
 import pl.books.magagement.model.internal.CreateBook;
 import pl.books.magagement.model.mappers.BookMapper;
 import pl.books.magagement.service.BookService;
@@ -33,6 +35,17 @@ public class BookController {
         Page<BookResponse> gotBooksResponsesPage = gotBooksPage.map(book -> bookMapper.bookEntityToBookResponse(book));
 
         return ResponseEntity.ok(gotBooksResponsesPage);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<BookResponse>> searchBooks(
+        @ParameterObject BookSearchCriteriaRequest request, @ParameterObject Pageable pageable
+    ){
+        BookSearchCriteria criteria = bookMapper.bookSearchCriteriaRequestToBookSearchCriteria(request);
+        Page<BookEntity> gotBooksPage = bookService.search(criteria, pageable);
+        Page<BookResponse> gotBooksResponsePage = gotBooksPage.map(bookMapper::bookEntityToBookResponse);
+
+        return ResponseEntity.ok(gotBooksResponsePage);
     }
 
     @PostMapping
