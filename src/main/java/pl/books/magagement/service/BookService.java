@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pl.books.magagement.model.api.request.BookSearchCriteriaRequest;
+import pl.books.magagement.model.api.response.PatchBook;
 import pl.books.magagement.model.entity.AuthorEntity;
 import pl.books.magagement.model.entity.BookEntity;
 import pl.books.magagement.model.entity.PublisherEntity;
@@ -63,6 +64,12 @@ public class BookService {
         );
     }
 
+    private BookEntity getById(UUID bookId) throws EntityNotFoundException{
+
+        return bookRepository.findById(bookId)
+            .orElseThrow(() -> new EntityNotFoundException("Book was not found with given id"));
+    }
+
     @Transactional
     public BookEntity create(CreateBook createBook) throws EntityNotFoundException, EntityExistsException{
 
@@ -103,10 +110,29 @@ public class BookService {
     }
 
     @Transactional
+    public BookEntity patchById(UUID bookId, PatchBook patchBook) throws EntityNotFoundException{
+
+        BookEntity foundBook = getById(bookId);
+
+        if(patchBook.title() != null){
+            foundBook.setTitle(patchBook.title());
+        }
+
+        if(patchBook.price() != null){
+            foundBook.setPrice(patchBook.price());
+        }
+
+        if(patchBook.picture() != null){
+            foundBook.setPicture(patchBook.picture());
+        }
+
+        return foundBook;
+    }
+
+    @Transactional
     public void deleteById(UUID bookId) throws EntityNotFoundException{
 
-        BookEntity foundBook = bookRepository.findById(bookId)
-            .orElseThrow(() -> new EntityNotFoundException("Book was not found by given id"));
+        BookEntity foundBook = getById(bookId);
 
         foundBook.getAuthors().forEach(author -> {
 

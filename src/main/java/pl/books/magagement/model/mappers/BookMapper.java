@@ -5,7 +5,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pl.books.magagement.model.api.request.BookSearchCriteriaRequest;
 import pl.books.magagement.model.api.request.CreateBookRequest;
+import pl.books.magagement.model.api.request.PatchBookRequest;
 import pl.books.magagement.model.api.response.BookResponse;
+import pl.books.magagement.model.api.response.PatchBook;
 import pl.books.magagement.model.entity.BookEntity;
 import pl.books.magagement.model.internal.BookSearchCriteria;
 import pl.books.magagement.model.internal.CreateBook;
@@ -26,6 +28,9 @@ public interface BookMapper {
 
     @Mapping(source = "picture", target = "picture", qualifiedByName = "base64ToByteArray")
     CreateBook createBookRequestToCreateBook(CreateBookRequest createBookRequest);
+
+    @Mapping(source = "picture", target = "picture", qualifiedByName = "base64ToByteArray")
+    PatchBook patchBookRequestToPatchBook(PatchBookRequest request);
 
     List<BookResponse> bookEntityListToBookResponseList(List<BookEntity> bookEntities);
 }

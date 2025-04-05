@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.books.magagement.model.api.request.BookSearchCriteriaRequest;
 import pl.books.magagement.model.api.request.CreateBookRequest;
+import pl.books.magagement.model.api.request.PatchBookRequest;
 import pl.books.magagement.model.api.response.BookResponse;
+import pl.books.magagement.model.api.response.PatchBook;
 import pl.books.magagement.model.entity.BookEntity;
 import pl.books.magagement.model.internal.BookSearchCriteria;
 import pl.books.magagement.model.internal.CreateBook;
@@ -57,6 +59,20 @@ public class BookController {
         BookResponse createdBookResponse = bookMapper.bookEntityToBookResponse(createdBook);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBookResponse);
+    }
+
+    @PatchMapping(value = "/{bookId}")
+    public ResponseEntity<BookResponse> patchById(
+        @PathVariable("bookId") String bookIdStr,
+        @RequestBody PatchBookRequest request
+    ){
+        UUID bookId = UUID.fromString(bookIdStr);
+
+        PatchBook patchBook = bookMapper.patchBookRequestToPatchBook(request);
+        BookEntity patchedBook = bookService.patchById(bookId, patchBook);
+        BookResponse patchedBookResponse = bookMapper.bookEntityToBookResponse(patchedBook);
+
+        return ResponseEntity.ok(patchedBookResponse);
     }
 
     @DeleteMapping(value = "/{bookId}")
