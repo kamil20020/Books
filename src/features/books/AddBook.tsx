@@ -137,6 +137,7 @@ const AddBook = (props: {
                         onChange={(newValue) => handleChangeForm("title", newValue)}
                     />
                     <DateSelector
+                        title="Data wydania"
                         value={form.publicationDate}
                         errorMessage={errors.publicationDate}
                         onChange={(newValue) => handleChangeForm("publicationDate", newValue)}

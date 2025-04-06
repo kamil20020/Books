@@ -1,6 +1,7 @@
 ﻿import axios from "axios";
 import Pageable from "../models/api/request/pageable";
 import CreateBook from "../models/api/request/createBook";
+import BookSearchCriteria from "../models/api/request/bookSearchCriteria";
 
 class BookService {
 
@@ -10,6 +11,23 @@ class BookService {
 
         return axios.get(this.api, {
             params: {
+                ...pagination
+            }
+        })
+    }
+
+    search(searchCriteria: BookSearchCriteria, pagination: Pageable){
+
+        let publicationDate: string | undefined = undefined
+
+        if(searchCriteria.publicationDate !== undefined){
+            publicationDate = new Date(searchCriteria.publicationDate)?.toISOString().slice(0, 10)
+        }
+        
+        return axios.get(`${this.api}/search`, {
+            params: {
+                ...searchCriteria,
+                publicationDate: publicationDate,
                 ...pagination
             }
         })

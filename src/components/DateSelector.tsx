@@ -2,8 +2,9 @@
 import ValidatedInput from "./ValidatedInput";
 
 const DateSelector = (props: {
+    title: string,
     value?: Date,
-    errorMessage: string;
+    errorMessage?: string;
     onChange: (newValue: Date) => void;
 }) => {
 
@@ -12,7 +13,7 @@ const DateSelector = (props: {
     return (
         <ValidatedInput
             inputProps={{
-                placeholder: "Data wydania",
+                placeholder: props.title,
                 type: isFocused ? "date" : "text",
                 onFocus: () => setIsFocused(true),
                 onBlur: () => setIsFocused(false),

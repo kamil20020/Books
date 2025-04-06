@@ -1,6 +1,6 @@
 ﻿const ValidatedInput = (
     props: {
-        errorMessage: string;
+        errorMessage?: string;
         inputProps?: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
         onChange: (newValue: string) => void;
     },
@@ -20,7 +20,11 @@
                 onChange={handleOnChange}
             />
             <div className="input-error">
-                {props.errorMessage} <div style={{color: "white", display: "inline"}}>white</div>
+                {props.errorMessage} {props.errorMessage !== undefined && 
+                    <div style={{color: "white", display: "inline"}}>
+                        white
+                    </div>
+                }
             </div>
         </div>
     )
