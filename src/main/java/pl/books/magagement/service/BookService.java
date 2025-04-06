@@ -19,11 +19,9 @@ import pl.books.magagement.repository.AuthorRepository;
 import pl.books.magagement.repository.BookRepository;
 import pl.books.magagement.specification.BookSpecification;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static org.springframework.data.jpa.domain.Specification.*;
 
@@ -47,6 +45,13 @@ public class BookService {
 
     public Page<BookEntity> search(BookSearchCriteria criteria, Pageable pageable){
 
+        boolean isCriteriaEmpty = Stream.of(criteria.title(), criteria.authorName(), criteria.publisherName(), criteria.publicationDate(), criteria.price())
+            .allMatch(Objects::isNull);
+
+        if(isCriteriaEmpty){
+            return getBooksPage(pageable);
+        }
+
         if(pageable == null){
             pageable = Pageable.unpaged();
         }
@@ -54,8 +59,11 @@ public class BookService {
         return bookRepository.findAll(
             where(
                 allOf(
-                    BookSpecification.matchTitle(criteria.title()),
-                    BookSpecification.matchAuthorName(criteria.authorName()),
+                    anyOf(
+                        BookSpecification.matchTitle(criteria.title()),
+                        BookSpecification.matchAuthorName(criteria.authorName()),
+                        BookSpecification.matchPublisherName(criteria.publisherName())
+                    ),
                     BookSpecification.matchLessPublicationDate(criteria.publicationDate()),
                     BookSpecification.matchLessPrice(criteria.price())
                 )
