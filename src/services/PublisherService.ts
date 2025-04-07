@@ -13,6 +13,15 @@ class PublisherService{
             }
         })
     }
+
+    getPublisherAuthors(publisherId: string, pageable: Pageable){
+
+        return axios.get(`${this.api}/${publisherId}/authors`, {
+            params: {
+                ...pageable
+            }
+        })
+    }
 }
 
 export default new PublisherService()

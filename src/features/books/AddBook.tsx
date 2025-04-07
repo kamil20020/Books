@@ -6,7 +6,7 @@ import Publisher from "../../models/api/response/publisher";
 import CreateBook from "../../models/api/request/createBook";
 import { an } from "react-router/dist/development/route-data-Cw8htKcF";
 import DateSelector from "../../components/DateSelector";
-import SelectPublisher from "../publisher/SelectPublisher";
+import SelectPublisher from "../publishers/SelectPublisher";
 import SelectAuthor from "../authors/SelectAuthor";
 import FormService from "../../services/FormService";
 import BookService from "../../services/BookService";

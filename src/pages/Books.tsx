@@ -33,7 +33,7 @@ const Books = () => {
 
     useEffect(() => {
 
-        handleSearchAndAppend(0)
+       handleSearchFromQueryParamsAndReplace()
     }, [])
 
     const handleSearchAndAppend = (newPage: number) => {

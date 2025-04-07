@@ -3,7 +3,7 @@ import AddButton from "../../components/AddButton";
 import FormService from "../../services/FormService";
 import ValidatedInput from "../../components/ValidatedInput";
 import Select from "../../components/PaginationAPIDropdown";
-import SelectPublisher from "../publisher/SelectPublisher";
+import SelectPublisher from "../publishers/SelectPublisher";
 import Author from "../../models/api/response/author";
 import AuthorService from "../../services/AuthorService";
 import CreateAuthor from "../../models/api/request/createAuthor";
