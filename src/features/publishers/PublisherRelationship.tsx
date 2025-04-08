@@ -8,8 +8,10 @@ import AddButton from "../../components/AddButton";
 import ContentHeader from "../../components/ContentHeader";
 
 export interface PublisherRelationshipParam{
-    name: string,
-    value: any
+    name?: string,
+    value: any,
+    isReactNode?: boolean,
+    rowStyles?: React.CSSProperties
 }
 
 const PublisherRelationship = (props: {

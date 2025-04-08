@@ -1,6 +1,8 @@
-﻿import Publisher from "../../models/api/response/publisher";
+﻿import RemoveButton from "../../components/RemoveButton";
+import Publisher from "../../models/api/response/publisher";
 import PublisherAuthors from "./PublisherAuthors";
 import PublisherBooks from "./PublisherBooks";
+import RemovePublisher from "./RemovePublisher";
 
 const PublisherView = (props: {
     publisher: Publisher
@@ -21,7 +23,8 @@ const PublisherView = (props: {
                 </div>
             </div>
             <PublisherAuthors publisherId={publisher.id}/>
-            <PublisherBooks/>
+            <PublisherBooks publisherId={publisher.id}/>
+            <RemovePublisher publisher={publisher}/>
         </div>
     )
 }

@@ -19,7 +19,7 @@ const Dialog = (props: {
             <div 
                 className="dialog noselect"
             >
-                <h2>{props.title}</h2>
+                <h2 style={{textAlign: "center"}}>{props.title}</h2>
                 <Icon 
                     iconName="close" 
                     size={32} 

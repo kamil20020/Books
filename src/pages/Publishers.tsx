@@ -6,6 +6,8 @@ import Pageable from "../models/api/request/pageable";
 import Page from "../models/api/response/page";
 import "../features/publishers/publishers.css"
 import PublisherView from "../features/publishers/PublisherView";
+import AddButton from "../components/AddButton";
+import AddPublisher from "../features/publishers/AddPublisher";
 
 const Publishers = () => {
 
@@ -35,6 +37,7 @@ const Publishers = () => {
         <>
             <ContentHeader title="Wydawcy"/>
             <div className="publishers">
+                <AddPublisher/>
                 {publishers.map((publisher: Publisher) => (
                     <PublisherView key={publisher.id} publisher={publisher}/>
                 ))}

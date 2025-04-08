@@ -14,7 +14,7 @@ const BookAuthorsHeader = (props: {
                     .map(a => a.firstname + " " + a.surname)
                     .join(", ")}
         >
-            Autorzy: {authors[0].firstname + " " + authors[0].surname} {authors.length > 1 && " (...)"}
+           {authors[0].firstname + " " + authors[0].surname} {authors.length > 1 && " (...)"}
         </p>
     )
 }

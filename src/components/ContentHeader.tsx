@@ -3,7 +3,7 @@
 }) => {
 
     return (
-        <h1 style={{marginTop: 12}}>{props.title}</h1>
+        <h1 style={{marginTop: 12, textAlign: "center"}}>{props.title}</h1>
     )
 }
 
