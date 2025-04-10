@@ -1,6 +1,4 @@
 # Books
-I am still working on this project, so it may seem like unfinished yet.
-
 Basic crud web app to manage basic data related to books (very simplified). The user will manage users, roles, books, authors, publishers and relations between them.
 
 Parts of the system e.g. frontend and backnd are independently developed on individual branches. The main branch has all the code from the project.
