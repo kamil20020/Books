@@ -114,28 +114,28 @@ Created accounts details:
 ### Page layout
 Header, content and footer:
 <p align="center">
-    <img src="screenshots/layout.png">
+    <img src="screenshots/layout/layout.png">
 <p>
 
 The app is responsive to about 500px width:
 <p align="center">
-    <img src="screenshots/responsive-responsive.png">
+    <img src="screenshots/layout/responsive.png">
 <p>
 
 Open menu:
 <p align="center">
-    <img src="screenshots/responsive-menu.png">
+    <img src="screenshots/layout/responsive-menu.png">
 <p>
 
 ### Login:
 Login:
 <p align="center">
-    <img src="screenshots/login.png">
+    <img src="screenshots/login/login.png">
 <p>
 
 Success login:
 <p align="center">
-    <img src="screenshots/login-1.png">
+    <img src="screenshots/login/login-1.png">
 <p>
 
 ### Users
