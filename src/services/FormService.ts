@@ -19,9 +19,9 @@
         return value != undefined && value.length > 0
     }
 
-    validatePositiveNumber(value: number){
+    validatePositiveNumber(value?: number){
 
-        return value && value >= 0
+        return value != undefined && value >= 0
     }
 
     validateMaxPresentDate(value: Date){

@@ -27,7 +27,7 @@ const Books = () => {
 
     const page = useRef<number>(0);
     const totalElements = useRef<number>(0);
-    const pageSize = 2;
+    const pageSize = 5;
 
     const isUserLogged = useAuthContext().isUserLogged
 
@@ -102,6 +102,18 @@ const Books = () => {
         totalElements.current = totalElements.current + 1
     }
 
+    const handleEdit = (updatedBook: Book) => {
+
+        const bookIndex = books
+            .findIndex((book: Book) => book.id === updatedBook.id)
+        
+        const newBooks = [...books]
+
+        newBooks[bookIndex] = updatedBook
+
+        setBooks(newBooks)
+    }
+
     const handleRemoveBook = (deletedBookId: string) => {
 
         const newBooks = books
@@ -142,6 +154,7 @@ const Books = () => {
                     <BookView
                         key={book.id}
                         book={book}
+                        handleEdit={handleEdit}
                         handleRemoveBook={handleRemoveBook}
                     />
                 ))}

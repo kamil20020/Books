@@ -108,6 +108,10 @@
     font-weight: bold;
 }
 
+.dropdown{
+    overflow-x: auto;
+}
+
 .dropdown > option{
     padding: 6px 4px;
 }

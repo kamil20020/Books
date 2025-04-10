@@ -20,7 +20,7 @@ const AuthorBooks = (props: {
 
     const page = useRef<number>(0);
     const totalElements = useRef<number>(0);
-    const pageSize = 1;
+    const pageSize = 3;
 
     const [showBooks, setShowBooks] = useState<boolean>(false)
 

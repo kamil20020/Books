@@ -12,8 +12,7 @@ const getPageSizeOption = (pageSize: string): Option => {
 const options: Option[] = [
 
     getPageSizeOption("1"),
-    getPageSizeOption("2"),
-    getPageSizeOption("5"),
+    getPageSizeOption("4"),
     getPageSizeOption("10"),
     getPageSizeOption("25"),
     getPageSizeOption("50"),

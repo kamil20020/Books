@@ -8,7 +8,6 @@ import Books from "./pages/Books";
 import Publishers from "./pages/Publishers";
 import Roles from "./pages/Roles";
 import Authors from "./pages/Authors";
-import Home from "./pages/Home";
 import Header from "./layout/header/Header";
 import Navigation from "./layout/Navigation";
 import Footer from "./layout/Footer";
@@ -21,9 +20,8 @@ function App() {
       <Header />
       <Content>
         <Routes>
-          <Route index element={<Home />} />
-          <Route path="/management-frontend" element={<Home />} />
-          <Route path="/books" element={<Books />} />
+          <Route index element={<Books />} />
+          <Route path="/management-frontend" element={<Books />} />
           <Route path="/publishers" element={<Publishers />} />
           <Route path="/authors" element={<Authors />} />
           <Route path="/users" element={

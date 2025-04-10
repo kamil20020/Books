@@ -1,5 +1,6 @@
 ﻿import axios from "axios"
 import Pageable from "../models/api/request/pageable"
+import CreatePublisher from "../models/api/request/createPublisher"
 
 class PublisherService{
 
@@ -30,6 +31,16 @@ class PublisherService{
                 ...pageable
             }
         })
+    }
+
+    create(request: CreatePublisher){
+
+        return axios.post(this.api, request);
+    }
+
+    deleteById(publisherId: string){
+
+        return axios.delete(`${this.api}/${publisherId}`)
     }
 }
 

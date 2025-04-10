@@ -37,7 +37,7 @@ const Navigation = () => {
                 title: <NavigationItem key={4} link="/authors" title="Autorzy"/>
             },
             {
-                title: <NavigationItem key={5} link="/books" title="Książki"/>
+                title: <NavigationItem key={5} link="/" title="Książki"/>
             },
             {
                 title: <NavigationItem key={3} link="/publishers" title="Wydawnictwa"/>

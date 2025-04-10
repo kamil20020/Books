@@ -14,7 +14,7 @@ const Roles = () => {
     const [roles, setRoles] = useState<Role[]>([])
     const pageNumber = useRef<number>(0)
     const totalElements = useRef<number>(0)
-    const pageSize = 2
+    const pageSize = 5
 
     useEffect(() => {
 

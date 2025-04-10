@@ -40,7 +40,7 @@ const Authors = () => {
     const [pagination, setPagination] = useState<Pagination>({
         page: 0,
         totalElements: 0,
-        pageSize: 1
+        pageSize: 4
     })
 
     const isUserLogged = useAuthContext().isUserLogged
@@ -120,7 +120,7 @@ const Authors = () => {
                     <div className="pagination-size-select">
                         Wierszy na stronie:
                         <PageSizeDropdown
-                            defaultValue={1}
+                            defaultValue={pagination.pageSize}
                             onSelect={(newPageSize: string) => {
                                 setPagination({...pagination, pageSize: +newPageSize})
                             }}

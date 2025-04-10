@@ -2,6 +2,7 @@
 import Pageable from "../models/api/request/pageable";
 import CreateBook from "../models/api/request/createBook";
 import BookSearchCriteria from "../models/api/request/bookSearchCriteria";
+import PatchBook from "../models/api/request/patchBook";
 
 class BookService {
 
@@ -36,6 +37,11 @@ class BookService {
     create(request: CreateBook){
 
         return axios.post(this.api, request)
+    }
+
+    patchById(bookId: string, request: PatchBook){
+
+        return axios.patch(`${this.api}/${bookId}`, request)
     }
 
     deleteById(bookId: string){

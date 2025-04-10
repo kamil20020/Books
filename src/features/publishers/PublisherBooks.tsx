@@ -6,29 +6,23 @@ import Pageable from "../../models/api/request/pageable";
 import Page from "../../models/api/response/page";
 import BookAuthorsHeader from "../books/BookAuthorsHeader";
 import Img from "../../components/Img";
+import { AxiosResponse } from "axios";
 
 const PublisherBooks = (props: {
     publisherId: string
 }) => {
 
-    const [books, setBooks] = useState<Book[]>([])
-    const pageSize = 2
+    const pageSize = 3
 
-    useEffect(() => {
+    const getSearchAndAppend = (page: number): Promise<AxiosResponse<any, any>> => {
 
         const pagination: Pageable = {
-            page: 0,
+            page: page,
             size: pageSize
         }
 
-        PublisherService.getPublisherBooks(props.publisherId, pagination)
-        .then((response) => {
-
-            const pagedResponse: Page<Book> = response.data
-
-            setBooks(pagedResponse.content)
-        })
-    }, [])
+        return PublisherService.getPublisherBooks(props.publisherId, pagination)
+    }
 
     const handleMapBookToRelationship = (book: Book): PublisherRelationshipParam[] => {
 
@@ -71,7 +65,7 @@ const PublisherBooks = (props: {
         <PublisherRelationship
             buttonPostfix={"ksiązki"}
             title={"Książki"}
-            relationshipRows={books}
+            getSearchAndAppend={getSearchAndAppend}
             relationshipMap={handleMapBookToRelationship}
         />
     )

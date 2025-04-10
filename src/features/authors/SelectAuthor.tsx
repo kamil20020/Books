@@ -14,14 +14,9 @@ const SelectAuthor = (props: {
     handleMultiSelect?: (authorIds: string[]) => void;
 }) => {
 
-    const getOptions = (): Promise<AxiosResponse<any, any>> => {
+    const getOptions = (pageable: Pageable): Promise<AxiosResponse<any, any>> => {
 
-        const pagination: Pageable = {
-            page: 0,
-            size: 2
-        }
-
-        return AuthorService.getPage(pagination)
+        return AuthorService.getPage(pageable)
     }
 
     const mapRowToOption = (data: Author): Option => {

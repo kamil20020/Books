@@ -1,14 +1,18 @@
 ﻿import RemoveButton from "../../components/RemoveButton";
+import { useAuthContext } from "../../context/AuthContext";
 import Publisher from "../../models/api/response/publisher";
 import PublisherAuthors from "./PublisherAuthors";
 import PublisherBooks from "./PublisherBooks";
 import RemovePublisher from "./RemovePublisher";
 
 const PublisherView = (props: {
-    publisher: Publisher
+    publisher: Publisher,
+    onRemove: (removedPublisherId: string) => void;
 }) => {
 
     const publisher = props.publisher
+
+    const isUserAdmin = useAuthContext().isUserAdmin
 
     return (
         <div className="publisher">
@@ -24,7 +28,12 @@ const PublisherView = (props: {
             </div>
             <PublisherAuthors publisherId={publisher.id}/>
             <PublisherBooks publisherId={publisher.id}/>
-            <RemovePublisher publisher={publisher}/>
+            {isUserAdmin() &&
+                <RemovePublisher
+                    publisher={publisher} 
+                    onRemove={props.onRemove}
+                />
+            }
         </div>
     )
 }
