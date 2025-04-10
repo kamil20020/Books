@@ -59,7 +59,7 @@ const PublisherRelationship = (props: {
             />
             {showRelationship &&
                 <div className="publisher-relationships">
-                    <ContentHeader title={relationshipRows.length > 0 ? "Autorzy" : "Brak"}/>
+                    <ContentHeader title={relationshipRows.length > 0 ? props.title : "Brak"}/>
                     {relationshipRows.length > 0 &&
                         relationshipRows.map((relationshipRow: PublisherRelationshipParam[]) => (
                             <PublisherRelationshipRow

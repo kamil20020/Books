@@ -239,7 +239,7 @@ Publisher's authors:
 
 Publisher's books:
 <p align="center">
-    <img src="screenshots/publishers/publisher-books.png">
+    <img src="screenshots/publishers/publisher-books-view.png">
 <p>
 
 
