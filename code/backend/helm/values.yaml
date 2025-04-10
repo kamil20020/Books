@@ -1,0 +1,7 @@
+auth:
+  database: "books"
+  username: "books"
+  password: "books-password"
+
+passwordUpdateJob:
+  enabled: true

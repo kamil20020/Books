@@ -1,0 +1,8 @@
+apiVersion: v2
+name: backend
+version: 0.0.1
+dependencies:
+  - name: postgresql
+    alias: db
+    version: 13
+    repository: https://charts.bitnami.com/bitnami

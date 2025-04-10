@@ -1,0 +1,8 @@
+﻿.login{
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: center;
+    row-gap: 18px;
+    height: 80%;
+}

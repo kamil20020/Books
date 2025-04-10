@@ -1,0 +1,4 @@
+INSERT INTO USERS_ROLES
+VALUES
+    ('5e9eef7f-4cca-4eff-942d-a28e1f50592a', '913b7862-f8f6-4e7d-8e5b-48a00dce4879'),
+    ('060062f4-3c95-40a3-b6ed-674193ad43d9', '71be9623-5afa-48a9-a821-589fd066cd14');
