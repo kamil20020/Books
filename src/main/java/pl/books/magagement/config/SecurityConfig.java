@@ -44,13 +44,14 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(request -> request
+                .requestMatchers("/security/public").permitAll()
+                .requestMatchers(HttpMethod.GET, "/publishers/**", "/books/**", "/authors/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users", "/users/login", "/users/refresh-access-token").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/logout").authenticated()
-                .requestMatchers(HttpMethod.GET, "/publishers/**", "/books/**", "/authors/**").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/books/**").authenticated()
+                .requestMatchers("/security/requires-admin").hasRole("ADMIN")
                 .requestMatchers("/users/**", "/roles/**").hasRole("ADMIN")
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() //.hasRole("ADMIN")
-                .requestMatchers("/security/public").permitAll()
-                .requestMatchers("/security/requires-admin").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .exceptionHandling(exceptions -> exceptions
