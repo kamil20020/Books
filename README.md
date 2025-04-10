@@ -97,13 +97,13 @@ Created accounts details:
 
 ## API
 <p align="center">
-    <img src="swagger/api-1.png">
+    <img src="swagger/swagger-1.png">
 <p>
 
 <p align="center">
-    <img src="swagger/api-2.png">
+    <img src="swagger/swagger-2.png">
 <p>
 
 <p align="center">
-    <img src="swagger/api-3.png">
+    <img src="swagger/swagger-3.png">
 <p>
