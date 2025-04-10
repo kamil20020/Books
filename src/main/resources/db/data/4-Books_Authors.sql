@@ -1,6 +1,12 @@
-INSERT INTO BOOKS_AUTHORS
-VALUES
-    ('b8a90f82-b376-4140-b047-ff4dbc753de1', '430bdf0b-f8f8-4ecc-876d-ece74157f731'),
-    ('b8a90f82-b376-4140-b047-ff4dbc753de1', '70631d13-11b7-4633-868b-719264adf64d'),
-    ('0ba07298-a712-4f5a-b514-bb25e6f70cb3', '430bdf0b-f8f8-4ecc-876d-ece74157f731'),
-    ('9cc4bd59-245d-4f8b-a425-4920020e27e5', '70631d13-11b7-4633-868b-719264adf64d');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('6ade0300-fff3-4b75-8c76-6baedef584fe', '430bdf0b-f8f8-4ecc-876d-ece74157f731');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('c3c262e0-06f4-47e6-9939-0cff8c15cb4d', '430bdf0b-f8f8-4ecc-876d-ece74157f731');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('c6a24e89-e4fc-4070-a45e-fccc61b5fe12', '430bdf0b-f8f8-4ecc-876d-ece74157f731');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('43ac7ff7-6fcc-4331-ba5c-f2ac5027ec61', '430bdf0b-f8f8-4ecc-876d-ece74157f731');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('b8335d3c-8af1-4868-90ea-fe7f2a8f685e', '70631d13-11b7-4633-868b-719264adf64d');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('2993218f-eb0e-4dd4-a944-fb1a5f8b4416', '70631d13-11b7-4633-868b-719264adf64d');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('7d80d72d-bd25-447d-9a60-6f383117c928', '7baa292e-e69d-4022-b7f4-8c23da6ac89f');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('47bf3125-dc27-463a-869d-93f14637096e', '8e25207a-06de-4dae-95ac-e8a1064d682f');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('47bf3125-dc27-463a-869d-93f14637096e', 'fee3f271-ec75-4df1-a4ad-4c8cf8a6009e');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('47bf3125-dc27-463a-869d-93f14637096e', 'e055f044-6b4d-48d5-8e99-a02435a6a5c7');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('9ccc459d-6357-442a-b41e-766df6bc6ca1', '9be7f086-b02f-4efc-ac04-fd650a4d0d01');
+INSERT INTO public.books_authors (book_id, author_id) VALUES ('9ccc459d-6357-442a-b41e-766df6bc6ca1', '23042143-6657-41ac-9ac8-801a9737d16d');
