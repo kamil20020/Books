@@ -62,6 +62,9 @@ Created accounts details:
 
 ## Nonfunctional requirements:
 
+### General:
+* Test backend by unit and integration tests in close to 100% test coverage.
+
 ### Auth:
 * Auth and authorization based on JWT - from scratch in Spring Security with both access and refresh tokens,
 * Logout by revoking refresh tokens - revocated refresh tokens are stored in the additional table. I assumed that token is revocated when backend have checked, that the token is expired or when the user log out. Backend checks if there are expired tokens every 24 hours,
@@ -105,3 +108,162 @@ Created accounts details:
 <p align="center">
     <img src="swagger/swagger-3.png">
 <p>
+
+## Screenshots
+
+### Page layout
+Header, content and footer:
+<p align="center">
+    <img src="screenshots/layout.png">
+<p>
+
+The app is responsive to about 500px width:
+<p align="center">
+    <img src="screenshots/responsive-responsive.png">
+<p>
+
+Open menu:
+<p align="center">
+    <img src="screenshots/responsive-menu.png">
+<p>
+
+### Login:
+Login:
+<p align="center">
+    <img src="screenshots/login.png">
+<p>
+
+Success login:
+<p align="center">
+    <img src="screenshots/login-1.png">
+<p>
+
+### Users
+Users view:
+<p align="center">
+    <img src="screenshots/users/users.png">
+<p>
+
+Add user:
+<p align="center">
+    <img src="screenshots/users/add-user.png">
+<p>
+
+Assign role to user:
+<p align="center">
+    <img src="screenshots/users/assign-role.png">
+<p>
+
+Edit user:
+<p align="center">
+    <img src="screenshots/users/edit-user.png">
+<p>
+
+Delete user:
+<p align="center">
+    <img src="screenshots/users/remove-user.png">
+<p>
+
+
+### Roles:
+Roles view:
+<p align="center">
+    <img src="screenshots/roles/roles.png">
+<p>
+
+Add role:
+<p align="center">
+    <img src="screenshots/roles/add-role.png">
+<p>
+
+
+### Authors:
+Authors view:
+<p align="center">
+    <img src="screenshots/authors/authors.png">
+<p>
+
+Add author:
+<p align="center">
+    <img src="screenshots/authors/add-author.png">
+<p>
+
+Author's books:
+<p align="center">
+    <img src="screenshots/authors/author-books.png">
+<p>
+
+
+### Books:
+Books view:
+<p align="center">
+    <img src="screenshots/books/books.png">
+<p>
+
+Book's details:
+<p align="center">
+    <img src="screenshots/books/book-details.png">
+<p>
+
+Add book (1/2):
+<p align="center">
+    <img src="screenshots/books/add-book.png">
+<p>
+
+Add book (2/2):
+<p align="center">
+    <img src="screenshots/books/add-book-1.png">
+<p>
+
+Edit book:
+<p align="center">
+    <img src="screenshots/books/edit-book.png">
+<p>
+
+
+### Publishers:
+Publishers view:
+<p align="center">
+    <img src="screenshots/publishers/publishers.png">
+<p>
+
+Add publisher:
+<p align="center">
+    <img src="screenshots/publishers/add-publisher.png">
+<p>
+
+Publisher's authors:
+<p align="center">
+    <img src="screenshots/publishers/publisher-authors.png">
+<p>
+
+Publisher's books:
+<p align="center">
+    <img src="screenshots/publishers/publisher-books.png">
+<p>
+
+
+### General details:
+Almost all data returned from backend are paged:
+<p align="center">
+    <img src="screenshots/pagination.png">
+<p>
+
+Operations create notifications:
+<p align="center">
+    <img src="screenshots/notification.png">
+<p>
+
+Most important forms are validated:
+<p align="center">
+    <img src="screenshots/validation.png">
+<p>
+
+Before deletes, there is required confirmation:
+<p align="center">
+    <img src="screenshots/delete-confirmation.png">
+<p>
+
+
+
+
